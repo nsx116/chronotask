@@ -47,6 +47,7 @@ track your tasks effectively using a Pomodoro timer with activity detection.
 ## Requirements
   - Python > 3.8
   - pipx
+
     To install the necessary packages, run the following commands:
 
     ```bash
@@ -56,17 +57,18 @@ track your tasks effectively using a Pomodoro timer with activity detection.
 
 ## Installation
 Download the ChronoTask package and install it using pipx:
+
     ```bash
     curl -LO https://github.com/nsx116/chronotask/raw/main/dist/chronotask_nsx116-0.0.1-py3-none-any.whl && \
     pipx install chronotask_nsx116-0.0.1-py3-none-any.whl
 
 ## Dependencies
 ChronoTask requires the following Python packages, which will be installed
-with pipx during installatin:
-    pynput
-    pygame
-    appdirs
-    terminaltables
+with pipx during installation:
+    - pynput
+    - pygame
+    - appdirs
+    - terminaltables
 
 
 
