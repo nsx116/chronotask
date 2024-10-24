@@ -56,7 +56,7 @@ track your tasks effectively using a Pomodoro timer with activity detection.
     sudo apt install --upgrade pipx
 
 ## Installation
-Download the ChronoTask package and install it using pipx:
+    Download the ChronoTask package and install it using pipx:
 
     ```bash
     curl -LO https://github.com/nsx116/chronotask/raw/main/dist/chronotask_nsx116-0.0.1-py3-none-any.whl && \
@@ -65,6 +65,7 @@ Download the ChronoTask package and install it using pipx:
 ## Dependencies
 ChronoTask requires the following Python packages, which will be installed
 with pipx during installation:
+
     - pynput
     - pygame
     - appdirs
