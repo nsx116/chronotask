@@ -36,11 +36,11 @@ track your tasks effectively using a Pomodoro timer with activity detection.
     ```bash
     chronotask list --status active
 
-- **Mark task with ID 2 as done:
+- **Mark task with ID 2 as done**:
     ```bash
     chronotask id 2 done
 
-- **Start the Pomodore timer for the task with ID 1:
+- **Start the Pomodore timer for the task with ID 1**:
     ```bash
     chronotask id 1 start 
 
@@ -56,11 +56,13 @@ track your tasks effectively using a Pomodoro timer with activity detection.
     sudo apt install --upgrade pipx
 
 ## Installation
-Download the ChronoTask package and install it using pipx:
+
+    Download the ChronoTask package and install it using pipx:
 
     ```bash
     curl -LO https://github.com/nsx116/chronotask/raw/main/dist/chronotask_nsx116-0.0.1-py3-none-any.whl && \
     pipx install chronotask_nsx116-0.0.1-py3-none-any.whl
+    ```
 
 ## Dependencies
 ChronoTask requires the following Python packages, which will be installed
