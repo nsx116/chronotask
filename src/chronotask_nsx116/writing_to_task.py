@@ -29,7 +29,7 @@ def load_objects_dictionary(objects_file):
         print(f"Dictionary loaded from {objects_file}")
         return objects_dictionary
     except FileNotFoundError:
-        print(f"No existing task file found. Starting with an empty task list.")
+        print("No existing task file found. Starting with an empty task list.")
 
 
 def get_global_id_by_current_id(task_id, sorted_ids):

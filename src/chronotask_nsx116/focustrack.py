@@ -1,9 +1,6 @@
 from datetime import datetime
-import os
-# import pkg_resources
 from pynput import mouse, keyboard
 import time
-import subprocess
 import threading
 from chronotask_nsx116.interval_timer import IntervalTimer
 from chronotask_nsx116.settings import Settings
@@ -54,8 +51,6 @@ class FocusTrack:
 
     def start(self, current_id):
         """Starts the timer, inactivity checker, and sets up activity listeners."""
-        # message = "Starting Timer ..."
-        # print(message)
 
         def write_starting_time_to_file():
             with open(self.pomodoro_summary, 'a') as f:

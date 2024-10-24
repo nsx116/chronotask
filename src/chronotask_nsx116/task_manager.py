@@ -1,4 +1,3 @@
-from terminaltables import SingleTable
 from terminaltables import AsciiTable
 from appdirs import user_data_dir
 import os
@@ -179,7 +178,7 @@ class TaskManager:
                 self.tasks = pickle.load(f)
             print(f"Tasks loaded from {self.tasks_file}")
         except FileNotFoundError:
-            print(f"No existing task file found. Starting with an empty task list.")
+            print("No existing task file found. Starting with an empty task list.")
     
     # Load global ID to file
     def load_global_id(self):

@@ -1,9 +1,6 @@
 import pygame
 import time
-# import pkg_resources
-import os
 import subprocess
-import importlib.resources
 from chronotask_nsx116.writing_to_task import write_total_activity_to_task
 from chronotask_nsx116.settings import Settings
 
@@ -14,7 +11,6 @@ class IntervalTimer:
         self.settings = Settings()
         self.activity_duration = 0  
         self.rest_duration = 0
-        # self.working = pomodoro_timer.working
         self.pomodoro_count = 0
         self.pomodoro_finish = False
         self.total_work_minutes = 0
@@ -89,7 +85,7 @@ class IntervalTimer:
             message = f"Long rest for {self.settings.long_rest_duration // 60} minutes."
             print(message)
             self.long_rest_start = False
-        if self.long_rest_finish == True:
+        if self.long_rest_finish:
             message = "Short rest finished! Time for a work."
             self.send_notification(message)
             self.long_rest_finish = False
@@ -97,7 +93,7 @@ class IntervalTimer:
             message = f"Short rest for {self.settings.short_rest_duration // 60} minutes."
             print(message)
             self.short_rest_start = False
-        if self.short_rest_finish == True:
+        if self.short_rest_finish:
             message = "Short rest finished! Time for a work."
             self.send_notification(message)
             self.short_rest_finish = False

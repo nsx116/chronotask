@@ -1,5 +1,4 @@
 from datetime import datetime, date
-from terminaltables import AsciiTable
 import textwrap
 
 class Task:
