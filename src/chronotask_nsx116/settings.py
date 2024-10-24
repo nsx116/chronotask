@@ -5,8 +5,8 @@ class Settings:
     def __init__(self):
         # Timer settings
         self.work_duration = 25 * 60   # Default 25 minutes
-        self.short_rest_duration = 5 * 6  # Default 5 minutes
-        self.long_rest_duration = 15 * 6  # Default 15 minutes
+        self.short_rest_duration = 5 * 60  # Default 5 minutes
+        self.long_rest_duration = 15 * 60 # Default 15 minutes
         self.pomodoros_before_long_rest = 4  # Default 4 Pomodoros before a long rest
         self.inactivity_limit = 90  # Default inactivity time (60 seconds for testing)
 

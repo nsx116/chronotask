@@ -3,6 +3,8 @@ import time
 import subprocess
 from chronotask_nsx116.writing_to_task import write_total_activity_to_task
 from chronotask_nsx116.settings import Settings
+import chronotask_nsx116.data
+import importlib.resources
 
 class IntervalTimer:
     def __init__(self, pomodoro_timer):  
@@ -24,11 +26,11 @@ class IntervalTimer:
         self.long_rest_finish = False
         self.active_for_minute = False
         self.settings = Settings()             
-        self.notification_sound = 'src/chronotask_nsx116/data/notification.wav'
+        #self.notification_sound = 'src/chronotask_nsx116/data/notification.wav'
         #self.notification_sound = pkg_resources.resource_filename(__name__, 'notification.wav')
-        #with importlib.resources.as_file(importlib.resources.files(__name__) / 'notification.wav') as path:
-         #   self.notification_sound = str(path)  # Convert to string if needed by your code
-            #print(f"Notification sound located at: {self.notification_sound}")
+        with importlib.resources.as_file(importlib.resources.files(chronotask_nsx116.data) / 'notification.wav') as path:
+            self.notification_sound = str(path)  # Convert to string if needed by your code
+            print(f"Notification sound located at: {self.notification_sound}")
         self.pomodoro_summary = self.settings.pomodoro_summary_file
 
     def run(self, current_id):
