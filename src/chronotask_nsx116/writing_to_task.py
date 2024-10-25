@@ -10,7 +10,7 @@ def write_total_activity_to_task(tasks_file, sorted_ids_file, current_id,
     if tasks:
         task = tasks.get(task_id)
         if task:
-            task.total_work += settings.work_duration
+            task.total_work += settings.work_duration / 60
         else:
             print(f"Task with ID {task_id} not found.")
     save_objects_dictionary(tasks, tasks_file)  # Save changes to file
