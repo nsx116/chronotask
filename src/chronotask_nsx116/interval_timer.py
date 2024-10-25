@@ -28,8 +28,6 @@ class IntervalTimer:
         self.long_rest_finish = False
         self.active_for_minute = False
         self.settings = Settings()             
-        #self.notification_sound = 'src/chronotask_nsx116/data/notification.wav'
-        #self.notification_sound = pkg_resources.resource_filename(__name__, 'notification.wav')
         with importlib.resources.as_file(importlib.resources.files(chronotask_nsx116.data) / 'notification.wav') as path:
             self.notification_sound = str(path)  # Convert to string if needed by your code
             print(f"Notification sound located at: {self.notification_sound}")

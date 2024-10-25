@@ -89,7 +89,7 @@ class FocusTrack:
 
     def wait_for_quit_input(self):
         """Waits for user input 'quit' and stops the timer."""
-        user_input = input("Type 'q' to stop the timer: ")
+        user_input = input("Type 'q' to stop the timer: \n")
         if user_input.strip().lower() == 'q':
             self.stop_timer = True
             self.write_summary_to_file()

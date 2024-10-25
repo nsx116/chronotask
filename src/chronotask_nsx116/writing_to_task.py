@@ -1,15 +1,16 @@
 import pickle
-
+from chronotask_nsx116.settings import Settings
 
 def write_total_activity_to_task(tasks_file, sorted_ids_file, current_id,
                                  total_work_minutes):
+    settings = Settings()
     tasks = load_objects_dictionary(tasks_file)
     sorted_ids = load_objects_dictionary(sorted_ids_file)
     task_id = get_global_id_by_current_id(current_id, sorted_ids)
     if tasks:
         task = tasks.get(task_id)
         if task:
-            task.total_work += total_work_minutes
+            task.total_work += settings.work_duration
         else:
             print(f"Task with ID {task_id} not found.")
     save_objects_dictionary(tasks, tasks_file)  # Save changes to file
