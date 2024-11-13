@@ -26,7 +26,7 @@ class FocusTrack:
             if self.working:
                 if time.time() - self.last_activity_time > self.settings.inactivity_limit:  # Inactivity period
                     if not self.activity_timer_pause:
-                        print(f"No activity for {self.settings.inactivity_limit} seconds, pausing timer {datetime.now().strftime('%Y%m%d %H:%M:%S')}")
+                        print(f"No activity for {self.settings.inactivity_limit} seconds, pausing timer {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
                         self.activity_timer_pause = True  # Pause the activity timer
             time.sleep(1)  # Check every second
 

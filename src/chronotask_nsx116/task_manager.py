@@ -102,7 +102,7 @@ class TaskManager:
 
     # Printing tasks neatly 
     def print_tasks(self):
-        table_data = [['ID', '[*]', 'Text', 'Created', 'Due Date', 'Total work']]
+        table_data = [['ID', '[*]', 'Text', 'Created', 'Due Date', 'Total work,\nhours']]
         for current_id, global_id in self.sorted_ids.items():
             task = self.tasks[global_id]
             if task.status == "active":
@@ -117,7 +117,8 @@ class TaskManager:
             padded_lines = [line.ljust(35) for line in wrapped_lines]
             task_text_wrapped = "\n".join(padded_lines)
             date_added = task.date_added.strftime("%Y-%m-%d")
-            table_data.append([current_id, checkbox, task_text_wrapped, date_added, task.due_date, task.total_work])
+            total_work_hours = round(task.total_work / 60, 1)
+            table_data.append([current_id, checkbox, task_text_wrapped, date_added, task.due_date, total_work_hours])
         table = AsciiTable(table_data)
         print(table.table)
 

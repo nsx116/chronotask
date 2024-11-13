@@ -38,5 +38,3 @@ def get_global_id_by_current_id(task_id, sorted_ids):
         if current_id == task_id:
             return global_id 
     return None  
-
-
