@@ -98,7 +98,7 @@ class TaskManager:
 
     def start_task(self, current_id):
         self.timer.start(current_id)
-        print(current_id)
+        # print(current_id)
 
     # Printing tasks neatly 
     def print_tasks(self):
