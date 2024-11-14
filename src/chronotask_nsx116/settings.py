@@ -12,13 +12,13 @@ class Settings:
 
         # Files
         self.app_name = "chronotask_nsx116"
-        self.tasks_file_short = "tasks.pkl"
+        self.data_file_short = "data.json"
         self.sorted_ids_file_short = "sorted_ids.pkl"
         self.global_id_file_short = "global_id.txt"
         self.pomodoro_summary_short = "pomodoro_summary.txt"
 
         self.data_dir = user_data_dir(self.app_name)
-        self.tasks_file = os.path.join(self.data_dir, self.tasks_file_short)
+        self.data_file = os.path.join(self.data_dir, self.data_file_short)
         self.sorted_ids_file = os.path.join(self.data_dir, self.sorted_ids_file_short)
         self.global_id_file = os.path.join(self.data_dir, self.global_id_file_short)
         self.pomodoro_summary_file = os.path.join(self.data_dir, self.pomodoro_summary_short)
