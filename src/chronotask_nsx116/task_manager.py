@@ -9,7 +9,7 @@ import textwrap
 import uuid
 from chronotask_nsx116.focustrack import FocusTrack 
 from chronotask_nsx116.settings import Settings
-from chronotask_nsx116.writing_to_task import load_data, save_data
+from chronotask_nsx116.writing_to_task import load_data, save_data, get_global_id_by_current_id
 
 class TaskManager:
     def __init__(self):
@@ -23,8 +23,8 @@ class TaskManager:
         # self.data = self.load_data(getattr(self, 'data_file', None) or 'data.json')
         self.data = load_data(self.data_file)
         self.sorted_ids = self.data.get("sorted_ids", {})
-        # self.sorted_ids = self.data["sorted_ids"] if self.data["sorted_ids"] else {}  # Dictionary to store tasks by their global ID
         self.tasks = self.data.get("tasks", [])  # Dictionary to store tasks by their global ID
+        # self.sorted_ids = self.data["sorted_ids"] if self.data["sorted_ids"] else {}  # Dictionary to store tasks by their global ID
         # self.tasks_file = self.settings.tasks_file
         # self.sorted_ids_file = self.settings.sorted_ids_file
         # self.global_id_file = self.settings.global_id_file
@@ -55,13 +55,6 @@ class TaskManager:
         print(self.tasks)
         save_data(self.data_file, self.data)
 
-    def get_global_id_by_current_id(self, task_id):
-        # print(self.sorted_ids)
-        for current_id, global_id in self.sorted_ids.items():
-            if current_id == task_id:
-                return global_id 
-        # - [ ]
-        return None  
 
     def mark_task_done(self, current_id):
         task_id = self.get_global_id_by_current_id(current_id)
