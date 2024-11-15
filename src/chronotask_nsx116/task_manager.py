@@ -2,6 +2,7 @@ from terminaltables import AsciiTable
 from appdirs import user_data_dir
 from pathlib import Path
 from datetime import date, datetime
+from collections import defaultdict
 import os
 import json
 import textwrap
@@ -15,9 +16,14 @@ class TaskManager:
         self.data_dir = self.settings.data_dir
         self.data_file = self.settings.data_file
         os.makedirs(self.data_dir, exist_ok=True)
-        self.data = self.load_data(self.data_file)
-        self.sorted_ids = self.data["sorted_ids"]  # Dictionary to store tasks by their global ID
-        self.tasks = self.data["tasks"]  # Dictionary to store tasks by their global ID
+        # self.data = {} # newly added
+        # self.sorted_ids = {} # newly added
+        # self.data = self.load_data(self.data_file)
+        # self.data = self.load_data(getattr(self, 'data_file', None) or 'data.json')
+        self.data = self.load_data()
+        self.sorted_ids = self.data.get("sorted_ids", {})
+        # self.sorted_ids = self.data["sorted_ids"] if self.data["sorted_ids"] else {}  # Dictionary to store tasks by their global ID
+        self.tasks = self.data.get("tasks", [])  # Dictionary to store tasks by their global ID
         # self.tasks_file = self.settings.tasks_file
         # self.sorted_ids_file = self.settings.sorted_ids_file
         # self.global_id_file = self.settings.global_id_file
@@ -25,8 +31,15 @@ class TaskManager:
         # self.load_tasks()  # Load tasks from file on initialization
         # self.load_sorted_ids() 
         self.timer = FocusTrack()
-        
 
+    def load_data(self):
+        path = Path(self.data_file)
+        if path.exists():
+            contents = path.read_text()
+            data = json.loads(contents)
+            return data
+        else:
+            return defaultdict(dict, {"tasks": []})
 
     # Add a new task
     def add_task(self, text, due_date=None, project=None, tag=None, value=None):
@@ -39,13 +52,15 @@ class TaskManager:
         task["global_id"] = str(uuid.uuid4()) 
 
         # Task lifecycle attributes
-        task["date_added"] = datetime.today()
+        task["date_added"] = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
         task["date_done"] = None
         task["date_dismissed"] = None
         task["status"] = "active"  # Can be "active", "done", or "dismissed"
         task["total_work"] = 0
         task["history"] = {}
-        self.tasks.append(task)
+        self.data["tasks"].append(task)
+        print(self.tasks)
+        self.save_data()
 
     def get_global_id_by_current_id(self, task_id):
         # print(self.sorted_ids)
@@ -149,12 +164,12 @@ class TaskManager:
                 checkbox = "[-]"
             else:
                 checkbox = "[?]"  # For any unknown status
-            wrapped_lines = textwrap.wrap(task.text, width=39)
+            wrapped_lines = textwrap.wrap(task["text"], width=39)
             padded_lines = [line.ljust(35) for line in wrapped_lines]
             task_text_wrapped = "\n".join(padded_lines)
-            date_added = task["date_added"].strftime("%Y-%m-%d")
-            total_work_hours = round(task.total_work / 60, 1)
-            table_data.append([current_id, checkbox, task_text_wrapped, date_added, task.due_date, total_work_hours])
+            date_added = task["date_added"]
+            total_work_hours = round(task["total_work"] / 60, 1)
+            table_data.append([current_id, checkbox, task_text_wrapped, date_added, task["date"], total_work_hours])
         table = AsciiTable(table_data)
         print(table.table)
 
@@ -208,12 +223,18 @@ class TaskManager:
             json.dump(self.data, file, indent=4)
         print(f"Tasks saved to {self.data_file}")
     
-    def load_data(self, data_file):
-        path = Path(data_file)
-        contents = path.read_text()
-        data = json.loads(contents)
-        return data
+    # In your class initialization or where you set `self.data`
+    
     """    
+    def load_data(self, data_file):
+        try:
+            path = Path(data_file)
+            contents = path.read_text()
+            data = json.loads(contents)
+            return data
+        except FileNotFoundError:
+            print("No existing task file found. Starting with an empty task list.")
+
     # Load tasks from a file
     def load_tasks(self):
         try:
