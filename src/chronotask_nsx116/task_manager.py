@@ -57,7 +57,7 @@ class TaskManager:
 
 
     def mark_task_done(self, current_id):
-        task_id = self.get_global_id_by_current_id(current_id)
+        task_id = get_global_id_by_current_id(current_id, self.sorted_ids)
         task = None  # Initialize task as None
         # Iterate through the list of tasks to find the one with the matching global_id
         for item in self.tasks:
@@ -72,7 +72,7 @@ class TaskManager:
             print(f"Task with ID {task_id} not found.")
 
     def mark_task_active(self, current_id):
-        task_id = self.get_global_id_by_current_id(current_id)
+        task_id = get_global_id_by_current_id(current_id, self.sorted_ids)
         task = None  # Initialize task as None
         # Iterate through the list of tasks to find the one with the matching global_id
         for item in self.tasks:
@@ -88,7 +88,7 @@ class TaskManager:
 
     # Dismiss a task by task ID
     def dismiss_task(self, current_id):
-        task_id = self.get_global_id_by_current_id(current_id)
+        task_id = get_global_id_by_current_id(current_id, self.sorted_ids)
         task = None  # Initialize task as None
         # Iterate through the list of tasks to find the one with the matching global_id
         for item in self.tasks:
@@ -104,7 +104,7 @@ class TaskManager:
 
     # Delete a task by task ID
     def delete_task(self, current_id):
-        task_id = self.get_global_id_by_current_id(current_id)
+        task_id = get_global_id_by_current_id(current_id, self.sorted_ids)
         task_found = False  # Track if the task was found and deleted
         # Iterate over self.tasks to find and remove the task with the matching global_id
         for i, item in enumerate(self.tasks):
@@ -120,7 +120,7 @@ class TaskManager:
     """
     # Modify a task by task ID
     def modify_task(self, current_id, **kwargs):
-        task_id = self.get_global_id_by_current_id(current_id)
+        task_id = get_global_id_by_current_id(current_id)
         task = self.tasks.get(task_id)
         if task:
             task.modify(**kwargs)
@@ -176,6 +176,7 @@ class TaskManager:
                 current_id += 1  # Increment current_id for the next task
             if self.sorted_ids:
                 self.print_tasks()
+                self.data["sorted_ids"] = self.sorted_ids
             save_data(self.data_file, self.data)
 
         elif status:
@@ -189,6 +190,7 @@ class TaskManager:
                 self.print_tasks()
             else:
                 print(f"No tasks with statuses: {', '.join(status)}")
+            self.data["sorted_ids"] = self.sorted_ids
             save_data(self.data_file, self.data)
 
         else:
@@ -201,6 +203,7 @@ class TaskManager:
                 self.print_tasks()
             else:
                     print("No tasks with status: active")
+            self.data["sorted_ids"] = self.sorted_ids
             save_data(self.data_file, self.data)
 
     

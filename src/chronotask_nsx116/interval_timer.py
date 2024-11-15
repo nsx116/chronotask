@@ -79,10 +79,7 @@ class IntervalTimer:
         if self.pomodoro_finish: 
             message = f"Pomodoro #{self.pomodoro_count} complete! Time for a break."
             self.send_notification(message)
-            write_total_activity_to_task(self.settings.tasks_file, 
-                                         self.settings.sorted_ids_file, 
-                                         current_id,
-                                         self.total_work_minutes)
+            write_total_activity_to_task(self.settings.data_file, current_id)
             self.pomodoro_finish = False
         if self.long_rest_start:
             message = f"Long rest for {self.settings.long_rest_duration // 60} minutes."

@@ -5,40 +5,48 @@ from pathlib import Path
 from collections import defaultdict
 
 
-def write_total_activity_to_task(tasks_file, sorted_ids_file, current_id,
-                                 total_work_minutes):
+def write_total_activity_to_task(data_file, current_id):
     settings = Settings()
-    tasks = load_objects_dictionary(tasks_file)
-    sorted_ids = load_objects_dictionary(sorted_ids_file)
-    task_id = get_global_id_by_current_id(current_id, sorted_ids)
-    if tasks:
-        task = tasks.get(task_id)
-        if task:
-            task.total_work += settings.work_duration / 60
-        else:
-            print(f"Task with ID {task_id} not found.")
-    save_objects_dictionary(tasks, tasks_file)  # Save changes to file
-    save_objects_dictionary(sorted_ids, sorted_ids_file)
-
-
-def get_global_id_by_current_id(task_id, sorted_ids):
-    for current_id, global_id in sorted_ids.items():
-        if current_id == task_id:
-            return global_id 
-    return None  
-
-def write_past_minutes_when_quit(data_file, current_id, activity_duration):
     data = load_data(data_file)
     tasks = data.get("tasks")  
     sorted_ids = data.get("sorted_ids")
     task_id = get_global_id_by_current_id(current_id, sorted_ids)
     if tasks:
-        task = tasks.get(task_id)
+        for item in tasks:
+            if task_id == item.get("global_id"):
+                task = item
+                break
+        if task:
+            task["total_work"] += settings.work_duration / 60
+        else:
+            print(f"Task with ID {task_id} not found.")
+    save_data(data_file, data)
+
+
+def get_global_id_by_current_id(task_id, sorted_ids):
+    task_id = str(task_id)
+    for current_id, global_id in sorted_ids.items():
+        if task_id == current_id:
+            return global_id 
+        else:
+            print(f"No task with {task_id} found")
+
+def write_past_minutes_when_quit(current_id, activity_duration):
+    settings = Settings()
+    data = load_data(settings.data_file)
+    tasks = data.get("tasks")  
+    sorted_ids = data.get("sorted_ids")
+    task_id = get_global_id_by_current_id(current_id, sorted_ids)
+    if tasks:
+        for item in tasks:
+            if task_id == item.get("global_id"):
+                task = item
+                break
         if task:
             task["total_work"] += activity_duration / 60
         else:
             print(f"Task with ID {task_id} not found.")
-    save_data(data_file, data)
+    save_data(settings.data_file, data)
 
 
 def save_data(data_file, data):

@@ -4,6 +4,7 @@ import time
 import threading
 from chronotask_nsx116.interval_timer import IntervalTimer
 from chronotask_nsx116.settings import Settings
+from chronotask_nsx116.writing_to_task import write_past_minutes_when_quit
 
 
 class FocusTrack:
@@ -15,6 +16,7 @@ class FocusTrack:
         self.activity_timer_pause = False
         self.pomodoro_summary = self.settings.pomodoro_summary_file
         self.interval_timer = IntervalTimer(self)
+        self.activity_duration = self.interval_timer.activity_duration
 
     def reset_activity_timer(self):
         """Resets the last activity time when there is user activity."""
@@ -75,7 +77,7 @@ class FocusTrack:
         activity_timer_thread.start()
 
         # Start the thread that waits for user input to quit
-        quit_thread = threading.Thread(target=self.wait_for_quit_input)
+        quit_thread = threading.Thread(target=self.wait_for_quit_input, args=(current_id,))
         quit_thread.start()
 
         # Join threads to allow for clean shutdown
@@ -87,11 +89,12 @@ class FocusTrack:
         mouse_listener.stop()
         keyboard_listener.stop()
 
-    def wait_for_quit_input(self):
+    def wait_for_quit_input(self, current_id):
         """Waits for user input 'quit' and stops the timer."""
         user_input = input("Type 'q' to stop the timer: \n")
         if user_input.strip().lower() == 'q':
             self.stop_timer = True
+            write_past_minutes_when_quit(current_id, self.interval_timer.activity_duration)
             self.write_summary_to_file()
 
     def write_summary_to_file(self):
