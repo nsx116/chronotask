@@ -9,6 +9,7 @@ import textwrap
 import uuid
 from chronotask_nsx116.focustrack import FocusTrack 
 from chronotask_nsx116.settings import Settings
+from chronotask_nsx116.writing_to_task import load_data, save_data
 
 class TaskManager:
     def __init__(self):
@@ -20,7 +21,7 @@ class TaskManager:
         # self.sorted_ids = {} # newly added
         # self.data = self.load_data(self.data_file)
         # self.data = self.load_data(getattr(self, 'data_file', None) or 'data.json')
-        self.data = self.load_data()
+        self.data = load_data(self.data_file)
         self.sorted_ids = self.data.get("sorted_ids", {})
         # self.sorted_ids = self.data["sorted_ids"] if self.data["sorted_ids"] else {}  # Dictionary to store tasks by their global ID
         self.tasks = self.data.get("tasks", [])  # Dictionary to store tasks by their global ID
@@ -32,14 +33,6 @@ class TaskManager:
         # self.load_sorted_ids() 
         self.timer = FocusTrack()
 
-    def load_data(self):
-        path = Path(self.data_file)
-        if path.exists():
-            contents = path.read_text()
-            data = json.loads(contents)
-            return data
-        else:
-            return defaultdict(dict, {"tasks": []})
 
     # Add a new task
     def add_task(self, text, due_date=None, project=None, tag=None, value=None):
@@ -60,7 +53,7 @@ class TaskManager:
         task["history"] = {}
         self.data["tasks"].append(task)
         print(self.tasks)
-        self.save_data()
+        save_data(self.data_file, self.data)
 
     def get_global_id_by_current_id(self, task_id):
         # print(self.sorted_ids)
@@ -80,7 +73,7 @@ class TaskManager:
                 break  # Exit loop once the task is found
         if task:
             task["status"] = "done"
-            self.save_data()  # Save changes to file
+            save_data(self.data_file, self.data)  # Save changes to file
             print(f"Task with ID {task_id} has been marked as done.")
         else:
             print(f"Task with ID {task_id} not found.")
@@ -95,7 +88,7 @@ class TaskManager:
                 break  # Exit loop once the task is found
         if task:
             task["status"] = "active"
-            self.save_data()  # Save changes to file
+            save_data(self.data_file, self.data)  # Save changes to file
             print(f"Task with ID {task_id} has been marked as active.")
         else:
             print(f"Task with ID {task_id} not found.")
@@ -111,7 +104,7 @@ class TaskManager:
                 break  # Exit loop once the task is found
         if task:
             task["status"] = "dismissed"
-            self.save_data()  # Save changes to file
+            save_data(self.data_file, self.data)  # Save changes to file
             print(f"Task with ID {task_id} has been dismissed.")
         else:
             print(f"Task with ID {task_id} not found.")
@@ -125,7 +118,7 @@ class TaskManager:
             if item.get("global_id") == task_id:
                 del self.tasks[i]  # Delete the task from the list
                 task_found = True
-                self.save_data()  # Save changes to file
+                save_data(self.data_file, self.data)  # Save changes to file
                 print(f"Task with ID {task_id} has been deleted.")
                 break  # Exit loop after deleting the task
         if not task_found:
@@ -190,7 +183,7 @@ class TaskManager:
                 current_id += 1  # Increment current_id for the next task
             if self.sorted_ids:
                 self.print_tasks()
-            self.save_data()
+            save_data(self.data_file, self.data)
 
         elif status:
             print("done, dismissed, active in status")
@@ -203,7 +196,7 @@ class TaskManager:
                 self.print_tasks()
             else:
                 print(f"No tasks with statuses: {', '.join(status)}")
-            self.save_data()
+            save_data(self.data_file, self.data)
 
         else:
             print("Without status")
@@ -215,60 +208,6 @@ class TaskManager:
                 self.print_tasks()
             else:
                     print("No tasks with status: active")
-            self.save_data()
+            save_data(self.data_file, self.data)
 
-    # Save tasks to a file (JSON format)
-    def save_data(self):
-        with open(self.data_file, 'w') as file:
-            json.dump(self.data, file, indent=4)
-        print(f"Tasks saved to {self.data_file}")
     
-    # In your class initialization or where you set `self.data`
-    
-    """    
-    def load_data(self, data_file):
-        try:
-            path = Path(data_file)
-            contents = path.read_text()
-            data = json.loads(contents)
-            return data
-        except FileNotFoundError:
-            print("No existing task file found. Starting with an empty task list.")
-
-    # Load tasks from a file
-    def load_tasks(self):
-        try:
-            with open(self.data_file, 'r') as f:
-                self.data = json.load(f)
-            print(f"Tasks loaded from {self.tasks_file}")
-        except FileNotFoundError:
-            print("No existing task file found. Starting with an empty task list.")
-
-    # Load global ID to file
-    def load_global_id(self):
-            try:
-                with open(self.global_id_file, 'r') as f:
-                    return int(f.read())
-            except FileNotFoundError:
-                return 1  # Start at ID 1 if no file is found
-
-    # Save global ID to file
-    def save_global_id(self):
-        with open(self.global_id_file, 'w') as f:
-            f.write(str(self.global_id))
-
-    # Save tasks to a file (JSON format)
-    def save_sorted_ids(self):
-        with open(self.sorted_ids_file, 'wb') as file:
-            pickle.dump(self.sorted_ids, file)
-        print(f"Tasks saved to {self.sorted_ids_file}")
-    
-    # Load tasks from a file
-    def load_sorted_ids(self):
-        try:
-            with open(self.sorted_ids_file, 'rb') as f:
-                self.sorted_ids = pickle.load(f)
-            print(f"Tasks loaded from {self.sorted_ids_file}")
-        except FileNotFoundError:
-            print(f"No existing {self.sorted_ids_file} file found.")
-    """

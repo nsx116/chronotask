@@ -1,5 +1,9 @@
 import pickle
 from chronotask_nsx116.settings import Settings
+import json
+from pathlib import Path
+from collections import defaultdict
+
 
 def write_total_activity_to_task(tasks_file, sorted_ids_file, current_id,
                                  total_work_minutes):
@@ -38,3 +42,22 @@ def get_global_id_by_current_id(task_id, sorted_ids):
         if current_id == task_id:
             return global_id 
     return None  
+
+# def write_past_minutes_when_quit(data_file, current_id, activitiy_duration):
+
+
+# Save tasks to a file (JSON format)
+def save_data(data_file, data):
+    with open(data_file, 'w') as file:
+        json.dump(data, file, indent=4)
+    print(f"Tasks saved to {data_file}")
+    
+
+def load_data(data_file):
+    path = Path(data_file)
+    if path.exists():
+        contents = path.read_text()
+        data = json.loads(contents)
+        return data
+    else:
+        return defaultdict(dict, {"tasks": []})
