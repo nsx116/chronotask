@@ -117,6 +117,30 @@ class TaskManager:
         if not task_found:
             print(f"Task with ID {task_id} not found.")
 
+
+    def modify_task(self, current_id, **kwargs):
+        task_id = get_global_id_by_current_id(current_id, self.sorted_ids)
+        task = None  # Initialize task as None
+        
+        # Iterate through the list of tasks to find the one with the matching global_id
+        for item in self.tasks:
+            if task_id == item.get("global_id"):
+                task = item  # Found the task
+                break  # Exit loop once the task is found
+        
+        if task:
+            # Update the task with provided keyword arguments
+            allowed_keys = {"text", "due_date", "project", "tag", "value"}
+            for key, value in kwargs.items():
+                if key in allowed_keys:
+                    task[key] = value  # Update the task's field
+            print("Updated Task:", task)
+            
+            # Save updated tasks back to the data file
+            save_data(self.data_file, self.data)
+        else:
+            print(f"Task with ID {task_id} not found.")
+
     """
     # Modify a task by task ID
     def modify_task(self, current_id, **kwargs):

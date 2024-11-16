@@ -70,7 +70,7 @@ class IntervalTimer:
                 if self.rest_duration >= self.settings.long_rest_duration:
                     self.long_rest_finish = True
                     self.change_to_work()
-            elif self.rest_duration % 60 == 0:
+            if self.rest_duration % 60 == 0:
                 self.total_rest_minutes += 1
                 if 0 < self.rest_duration < self.settings.long_rest_duration:
                     self.resting_for_minute = True
