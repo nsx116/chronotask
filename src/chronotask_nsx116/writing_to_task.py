@@ -1,5 +1,5 @@
 # import pickle
-from chronotask_nsx116.settings import Settings
+from chronotask_nsx116.settings import Settings, Files
 import json
 from pathlib import Path
 from collections import defaultdict
@@ -7,6 +7,7 @@ from collections import defaultdict
 
 def write_total_activity_to_task(data_file, current_id):
     settings = Settings()
+    files = Files()
     data = load_data(data_file)
     tasks = data.get("tasks")  
     sorted_ids = data.get("sorted_ids")
@@ -33,7 +34,8 @@ def get_global_id_by_current_id(task_id, sorted_ids):
 
 def write_past_minutes_when_quit(current_id, activity_duration):
     settings = Settings()
-    data = load_data(settings.data_file)
+    files = Files()
+    data = load_data(files.data_file)
     tasks = data.get("tasks")  
     sorted_ids = data.get("sorted_ids")
     task_id = get_global_id_by_current_id(current_id, sorted_ids)
@@ -46,7 +48,7 @@ def write_past_minutes_when_quit(current_id, activity_duration):
             task["total_work"] += activity_duration / 60
         else:
             print(f"Task with ID {task_id} not found.")
-    save_data(settings.data_file, data)
+    save_data(files.data_file, data)
 
 
 def save_data(data_file, data):

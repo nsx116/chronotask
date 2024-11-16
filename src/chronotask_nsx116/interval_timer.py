@@ -5,7 +5,7 @@ import pygame
 import time
 import subprocess
 from chronotask_nsx116.writing_to_task import write_total_activity_to_task
-from chronotask_nsx116.settings import Settings
+from chronotask_nsx116.settings import Settings, Files
 import chronotask_nsx116.data
 import importlib.resources
 
@@ -14,6 +14,7 @@ class IntervalTimer:
         pygame.mixer.init()
         self.timer = pomodoro_timer
         self.settings = Settings()
+        self.files = Files()
         self.activity_duration = 0  
         self.rest_duration = 0
         self.pomodoro_count = 0
@@ -32,7 +33,7 @@ class IntervalTimer:
         with importlib.resources.as_file(importlib.resources.files(chronotask_nsx116.data) / 'notification.wav') as path:
             self.notification_sound = str(path)  # Convert to string if needed by your code
             print(f"Notification sound located at: {self.notification_sound}")
-        self.pomodoro_summary = self.settings.pomodoro_summary_file
+        self.pomodoro_summary = self.files.pomodoro_summary_file
 
     def run(self, current_id):
         self.update_activity_timer()
@@ -79,7 +80,7 @@ class IntervalTimer:
         if self.pomodoro_finish: 
             message = f"Pomodoro #{self.pomodoro_count} complete! Time for a break."
             self.send_notification(message)
-            write_total_activity_to_task(self.settings.data_file, current_id)
+            write_total_activity_to_task(self.files.data_file, current_id)
             self.pomodoro_finish = False
         if self.long_rest_start:
             message = f"Long rest for {self.settings.long_rest_duration // 60} minutes."

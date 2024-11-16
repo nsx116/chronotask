@@ -3,18 +3,19 @@ from pynput import mouse, keyboard
 import time
 import threading
 from chronotask_nsx116.interval_timer import IntervalTimer
-from chronotask_nsx116.settings import Settings
+from chronotask_nsx116.settings import Settings, Files
 from chronotask_nsx116.writing_to_task import write_past_minutes_when_quit
 
 
 class FocusTrack:
     def __init__(self):
         self.settings = Settings()
+        self.files = Files()
         self.last_activity_time = time.time()
         self.stop_timer = False
         self.working = True
         self.activity_timer_pause = False
-        self.pomodoro_summary = self.settings.pomodoro_summary_file
+        self.pomodoro_summary = self.files.pomodoro_summary_file
         self.interval_timer = IntervalTimer(self)
         self.activity_duration = self.interval_timer.activity_duration
 

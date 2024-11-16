@@ -8,14 +8,15 @@ import json
 import textwrap
 import uuid
 from chronotask_nsx116.focustrack import FocusTrack 
-from chronotask_nsx116.settings import Settings
+from chronotask_nsx116.settings import Settings, Files
 from chronotask_nsx116.writing_to_task import load_data, save_data, get_global_id_by_current_id
 
 class TaskManager:
     def __init__(self):
         self.settings = Settings()
-        self.data_dir = self.settings.data_dir
-        self.data_file = self.settings.data_file
+        self.files = Files()
+        self.data_dir = self.files.data_dir
+        self.data_file = self.files.data_file
         os.makedirs(self.data_dir, exist_ok=True)
         # self.data = {} # newly added
         # self.sorted_ids = {} # newly added
