@@ -13,18 +13,19 @@ from chronotask_nsx116.writing_to_task import load_data, save_data, get_global_i
 
 class TaskManager:
     def __init__(self):
-        self.settings = Settings()
+        # self.settings = Settings()
         self.files = Files()
         self.data_dir = self.files.data_dir
         self.data_file = self.files.data_file
         os.makedirs(self.data_dir, exist_ok=True)
+        self.data = load_data(self.data_file)
+        self.sorted_ids = self.data.get("sorted_ids", {})
+        self.tasks = self.data.get("tasks", [])  # Dictionary to store tasks by their global ID
+        self.settings = Settings.from_dict(self.data.get("settings", {}))
         # self.data = {} # newly added
         # self.sorted_ids = {} # newly added
         # self.data = self.load_data(self.data_file)
         # self.data = self.load_data(getattr(self, 'data_file', None) or 'data.json')
-        self.data = load_data(self.data_file)
-        self.sorted_ids = self.data.get("sorted_ids", {})
-        self.tasks = self.data.get("tasks", [])  # Dictionary to store tasks by their global ID
         # self.sorted_ids = self.data["sorted_ids"] if self.data["sorted_ids"] else {}  # Dictionary to store tasks by their global ID
         # self.tasks_file = self.settings.tasks_file
         # self.sorted_ids_file = self.settings.sorted_ids_file
@@ -141,6 +142,29 @@ class TaskManager:
             save_data(self.data_file, self.data)
         else:
             print(f"Task with ID {task_id} not found.")
+
+    def set_settings(self, **kwargs):
+        # Convert the current settings to a dictionary
+        settings_dict = self.settings.to_dict()
+        
+        # Define allowed keys and their corresponding attribute names in Settings
+        allowed_keys = {
+            "work": "work_duration",
+            "short_rest": "short_rest_duration",
+            "long_rest": "long_rest_duration",
+            "pomodoros": "pomodoros_before_long_rest",
+            "inactivity": "inactivity_limit",
+        }
+        
+        # Update settings based on allowed keys
+        for key, value in kwargs.items():
+            if key in allowed_keys:
+                setattr(self.settings, allowed_keys[key], value)  # Update the Settings instance attribute
+        
+        # Save updated settings back to the data file
+        self.data["settings"] = self.settings.to_dict()  # Update the settings in the data dictionary
+        self.save_data()  # Save the updated data
+        print("Updated settings:", self.settings)
 
     """
     # Modify a task by task ID

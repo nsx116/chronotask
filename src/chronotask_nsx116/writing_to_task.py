@@ -64,7 +64,7 @@ def load_data(data_file):
         data = json.loads(contents)
         return data
     else:
-        return defaultdict(dict, {"preferences": {},
+        return defaultdict(dict, {"settings": {},
                                   "sorted_ids": {},
                                   "tasks": []})
         # return defaultdict(dict, {"tasks": []})

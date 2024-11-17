@@ -2,18 +2,36 @@ from appdirs import user_data_dir
 import os
 
 class Settings:
-    def __init__(self):
-        # Timer settings
-        self.work_duration = 5     # Default 25 minutes
-        self.short_rest_duration = 8   # Default 5 minutes
-        self.long_rest_duration = 10  # Default 15 minutes
-        self.pomodoros_before_long_rest = 4  # Default 4 Pomodoros before a long rest
-        self.inactivity_limit = 90  # Default inactivity time (60 seconds for testing)
+    def __init__(self, work_duration=5, short_rest_duration=5, long_rest_duration=5, 
+                 pomodoros_before_long_rest=4, inactivity_limit=1):
+        self.work_duration = work_duration       
+        self.short_rest_duration = short_rest_duration 
+        self.long_rest_duration = long_rest_duration 
+        self.pomodoros_before_long_rest = pomodoros_before_long_rest  
+        self.inactivity_limit = inactivity_limit * 60  
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            work_duration = data.get("work_duration", 5),     
+            short_rest_duration = data.get("short_rest_duration", 5), 
+            long_rest_duration = data.get("long_rest_duration", 5), 
+            pomodoros_before_long_rest = data.get("pomodoros_before_long_rest", 4),  
+            inactivity_limit = data.get("inactivity_limit", 1),  
+                )
+
+    def to_dict(self):
+        return {
+                "work_duration": self.work_duration,      
+                "short_rest_duration": self.short_rest_duration, 
+                "long_rest_duration": self.long_rest_duration, 
+                "pomodoros_before_long_rest": self.pomodoros_before_long_rest,
+                "inactivity_limit": self.inactivity_limit, 
+                }
 
 
 class Files:
     def __init__(self):
-        # Files
         self.app_name = "chronotask_nsx116"
         self.data_file_short = "data.json"
         self.pomodoro_summary_short = "pomodoro_summary.txt"
