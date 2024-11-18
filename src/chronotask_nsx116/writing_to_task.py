@@ -33,7 +33,6 @@ def get_global_id_by_current_id(task_id, sorted_ids):
             print(f"No task with {task_id} found")
 
 def write_past_minutes_when_quit(current_id, activity_duration):
-    settings = Settings()
     files = Files()
     data = load_data(files.data_file)
     tasks = data.get("tasks")  

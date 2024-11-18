@@ -13,11 +13,9 @@ class IntervalTimer:
     def __init__(self, pomodoro_timer):  
         pygame.mixer.init()
         self.timer = pomodoro_timer
-        self.settings = Settings()
-        # self.settings = pomodoro_timer.settings
         self.files = Files()
-        self.activity_duration = 0  
-        self.rest_duration = 0
+        self.activity_duration = 0 # Activity since start  
+        self.rest_duration = 0     # Rest pause duration
         self.pomodoro_count = 0
         self.pomodoro_finish = False
         self.total_work_minutes = 0
@@ -103,7 +101,7 @@ class IntervalTimer:
             print(f"Active for {self.total_work_minutes} minute(s).")
             self.active_for_minute = False
         if self.resting_for_minute:
-            print(f"Resting for {self.total_work_minutes} minute(s).")
+            print(f"Resting for {self.rest_duration // 60} minute(s).")
             self.resting_for_minute = False
 
 
