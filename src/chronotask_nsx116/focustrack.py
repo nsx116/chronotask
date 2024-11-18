@@ -8,8 +8,8 @@ from chronotask_nsx116.writing_to_task import write_past_minutes_when_quit
 
 
 class FocusTrack:
-    def __init__(self):
-        self.settings = Settings()
+    def __init__(self, task_manager_settings):
+        self.settings = task_manager_settings
         self.files = Files()
         self.last_activity_time = time.time()
         self.stop_timer = False
@@ -54,6 +54,14 @@ class FocusTrack:
 
     def start(self, current_id):
         """Starts the timer, inactivity checker, and sets up activity listeners."""
+        print(
+            f"Timer settings:\n"
+            f"  Work: {self.settings.work_duration} minutes\n"
+            f"  Short rest: {self.settings.short_rest_duration} minutes\n"
+            f"  Long rest: {self.settings.long_rest_duration} minutes\n"
+            f"  Pomodoros: {self.settings.pomodoros_before_long_rest}\n"
+            f"  Inactivity limit: {self.settings.inactivity_limit} seconds\n"
+        )
 
         def write_starting_time_to_file():
             with open(self.pomodoro_summary, 'a') as f:

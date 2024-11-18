@@ -2,13 +2,13 @@ from appdirs import user_data_dir
 import os
 
 class Settings:
-    def __init__(self, work_duration=5, short_rest_duration=5, long_rest_duration=5, 
-                 pomodoros_before_long_rest=4, inactivity_limit=1):
+    def __init__(self, work_duration=25 * 60, short_rest_duration=5 * 60, long_rest_duration=15 * 60, 
+                 pomodoros_before_long_rest=4, inactivity_limit=90):
         self.work_duration = work_duration       
         self.short_rest_duration = short_rest_duration 
         self.long_rest_duration = long_rest_duration 
         self.pomodoros_before_long_rest = pomodoros_before_long_rest  
-        self.inactivity_limit = inactivity_limit * 60  
+        self.inactivity_limit = inactivity_limit  
 
     @classmethod
     def from_dict(cls, data):

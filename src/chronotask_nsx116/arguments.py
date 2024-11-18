@@ -48,7 +48,7 @@ def parse_args():
     set_parser.add_argument("--short-rest", help="Short rest duration in minutes")
     set_parser.add_argument("--long-rest", help="Long rest duration in minutes")
     set_parser.add_argument("--pomodoros", help="Pomodoros count before long rest")
-    set_parser.add_argument("--inactivity", help="Inactivity duration in minutes to stop activity timer")
+    set_parser.add_argument("--inactivity", help="Inactivity duration in seconds to stop activity timer")
 
     return parser.parse_args()
 
@@ -93,20 +93,20 @@ def handle_id_action(manager, args):
 def handle_set(manager, args):
     # Convert argument values to integers if they are provided, otherwise leave as None
     manager.set_settings(
-        work=args.work,
-        short_rest=args.short_rest,
-        long_rest=args.long_rest,
-        pomodoros=args.pomodoros,
-        inactivity=args.inactivity,
-    )
-"""
-def handle_set(manager, args):
-    # Convert argument values to integers if they are provided, otherwise leave as None
-    manager.set_settings(
         work=int(args.work) if args.work else None,
         short_rest=int(args.short_rest) if args.short_rest else None,
         long_rest=int(args.long_rest) if args.long_rest else None,
         pomodoros=int(args.pomodoros) if args.pomodoros else None,
         inactivity=int(args.inactivity) if args.inactivity else None,
+    )
+"""
+def handle_set(manager, args):
+    # Convert argument values to integers if they are provided, otherwise leave as None
+    manager.set_settings(
+        work=args.work,
+        short_rest=args.short_rest,
+        long_rest=args.long_rest,
+        pomodoros=args.pomodoros,
+        inactivity=args.inactivity,
     )
 """

@@ -22,7 +22,6 @@ class TaskManager:
         self.sorted_ids = self.data.get("sorted_ids", {})
         self.tasks = self.data.get("tasks", [])  # Dictionary to store tasks by their global ID
         self.settings = Settings.from_dict(self.data.get("settings", {}))
-        print(self.settings.work_duration)
         # self.data["settings"] = self.settings.to_dict()  # Update the settings in the data dictionary
         # self.data = {} # newly added
         # self.sorted_ids = {} # newly added
@@ -35,7 +34,7 @@ class TaskManager:
         # self.global_id = self.load_global_id()
         # self.load_tasks()  # Load tasks from file on initialization
         # self.load_sorted_ids() 
-        self.timer = FocusTrack()
+        self.timer = FocusTrack(self.settings)
 
 
     # Add a new task
@@ -160,7 +159,8 @@ class TaskManager:
         
         # Update settings based on allowed keys
         for key, value in kwargs.items():
-            if key in allowed_keys and value:
+            #if key in allowed_keys and value:
+            if value:
                 setattr(self.settings, allowed_keys[key], value)  # Update the Settings instance attribute
         
         # Save updated settings back to the data file

@@ -14,6 +14,7 @@ class IntervalTimer:
         pygame.mixer.init()
         self.timer = pomodoro_timer
         self.settings = Settings()
+        # self.settings = pomodoro_timer.settings
         self.files = Files()
         self.activity_duration = 0  
         self.rest_duration = 0
@@ -29,7 +30,7 @@ class IntervalTimer:
         self.long_rest_start = False
         self.long_rest_finish = False
         self.active_for_minute = False
-        self.settings = Settings()             
+        self.settings = pomodoro_timer.settings
         with importlib.resources.as_file(importlib.resources.files(chronotask_nsx116.data) / 'notification.wav') as path:
             self.notification_sound = str(path)  # Convert to string if needed by your code
             print(f"Notification sound located at: {self.notification_sound}")
