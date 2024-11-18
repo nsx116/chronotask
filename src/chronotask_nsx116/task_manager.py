@@ -22,6 +22,8 @@ class TaskManager:
         self.sorted_ids = self.data.get("sorted_ids", {})
         self.tasks = self.data.get("tasks", [])  # Dictionary to store tasks by their global ID
         self.settings = Settings.from_dict(self.data.get("settings", {}))
+        print(self.settings.work_duration)
+        # self.data["settings"] = self.settings.to_dict()  # Update the settings in the data dictionary
         # self.data = {} # newly added
         # self.sorted_ids = {} # newly added
         # self.data = self.load_data(self.data_file)
@@ -158,15 +160,38 @@ class TaskManager:
         
         # Update settings based on allowed keys
         for key, value in kwargs.items():
+            if key in allowed_keys and value:
+                setattr(self.settings, allowed_keys[key], value)  # Update the Settings instance attribute
+        
+        # Save updated settings back to the data file
+        self.data["settings"] = self.settings.to_dict()  # Update the settings in the data dictionary
+        save_data(self.data_file, self.data)  # Save the updated data
+        print("Updated settings:", self.settings)
+
+    """
+    def set_settings(self, **kwargs):
+        # Convert the current settings to a dictionary
+        settings_dict = self.settings.to_dict()
+        
+        # Define allowed keys and their corresponding attribute names in Settings
+        allowed_keys = {
+            "work": "work_duration",
+            "short_rest": "short_rest_duration",
+            "long_rest": "long_rest_duration",
+            "pomodoros": "pomodoros_before_long_rest",
+            "inactivity": "inactivity_limit",
+        }
+        
+        # Update settings based on allowed keys
+        for key, value in kwargs.items():
             if key in allowed_keys:
                 setattr(self.settings, allowed_keys[key], value)  # Update the Settings instance attribute
         
         # Save updated settings back to the data file
         self.data["settings"] = self.settings.to_dict()  # Update the settings in the data dictionary
-        self.save_data()  # Save the updated data
+        save_data(self.data_file, self.data)  # Save the updated data
         print("Updated settings:", self.settings)
 
-    """
     # Modify a task by task ID
     def modify_task(self, current_id, **kwargs):
         task_id = get_global_id_by_current_id(current_id)
