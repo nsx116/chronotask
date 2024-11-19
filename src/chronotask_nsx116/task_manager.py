@@ -160,49 +160,14 @@ class TaskManager:
         # Update settings based on allowed keys
         for key, value in kwargs.items():
             if key in allowed_keys and value:
-                setattr(self.settings, allowed_keys[key], value * 60)  # Update the Settings instance attribute
+                setattr(self.settings, allowed_keys[key], 
+                        value * 60 if allowed_keys[key] in ["short_rest_duration", "long_rest_duration", "work_duration"] else value)  # Update the Settings instance attribute
         
         # Save updated settings back to the data file
         self.data["settings"] = self.settings.to_dict()  # Update the settings in the data dictionary
         save_data(self.data_file, self.data)  # Save the updated data
         print("Updated settings:", self.settings)
 
-    """
-    def set_settings(self, **kwargs):
-        # Convert the current settings to a dictionary
-        settings_dict = self.settings.to_dict()
-        
-        # Define allowed keys and their corresponding attribute names in Settings
-        allowed_keys = {
-            "work": "work_duration",
-            "short_rest": "short_rest_duration",
-            "long_rest": "long_rest_duration",
-            "pomodoros": "pomodoros_before_long_rest",
-            "inactivity": "inactivity_limit",
-        }
-        
-        # Update settings based on allowed keys
-        for key, value in kwargs.items():
-            if key in allowed_keys:
-                setattr(self.settings, allowed_keys[key], value)  # Update the Settings instance attribute
-        
-        # Save updated settings back to the data file
-        self.data["settings"] = self.settings.to_dict()  # Update the settings in the data dictionary
-        save_data(self.data_file, self.data)  # Save the updated data
-        print("Updated settings:", self.settings)
-
-    # Modify a task by task ID
-    def modify_task(self, current_id, **kwargs):
-        task_id = get_global_id_by_current_id(current_id)
-        task = self.tasks.get(task_id)
-        if task:
-            task.modify(**kwargs)
-            print(task)
-            self.save_tasks()  # Save changes to file
-            self.save_sorted_ids()
-        else:
-            print(f"Task with ID {task_id} not found.")
-    """
     def start_task(self, current_id):
         self.timer.start(current_id)
         print(current_id)
