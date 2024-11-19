@@ -159,9 +159,8 @@ class TaskManager:
         
         # Update settings based on allowed keys
         for key, value in kwargs.items():
-            #if key in allowed_keys and value:
-            if value:
-                setattr(self.settings, allowed_keys[key], value)  # Update the Settings instance attribute
+            if key in allowed_keys and value:
+                setattr(self.settings, allowed_keys[key], value * 60)  # Update the Settings instance attribute
         
         # Save updated settings back to the data file
         self.data["settings"] = self.settings.to_dict()  # Update the settings in the data dictionary
