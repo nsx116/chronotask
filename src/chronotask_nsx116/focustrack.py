@@ -18,6 +18,8 @@ class FocusTrack:
         self.pomodoro_summary = self.files.pomodoro_summary_file
         self.interval_timer = IntervalTimer(self)
         self.activity_duration = self.interval_timer.activity_duration
+        self.work_started_at = None
+
 
     def reset_activity_timer(self):
         """Resets the last activity time when there is user activity."""
@@ -63,6 +65,9 @@ class FocusTrack:
             f"  Inactivity limit: {self.settings.inactivity_limit} seconds\n"
         )
 
+        self.work_started_at = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+
+
         def write_starting_time_to_file():
             with open(self.pomodoro_summary, 'a') as f:
                 f.write(f"Work started at:  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
@@ -103,7 +108,8 @@ class FocusTrack:
         user_input = input("Type 'q' to stop the timer: \n")
         if user_input.strip().lower() == 'q':
             self.stop_timer = True
-            write_past_minutes_when_quit(current_id, self.interval_timer.activity_duration)
+            write_past_minutes_when_quit(current_id, self.interval_timer.activity_duration,
+                                         self.work_started_at, self.interval_timer.total_work_minutes)
             self.write_summary_to_file()
 
     def write_summary_to_file(self):
