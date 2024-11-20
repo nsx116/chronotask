@@ -67,7 +67,7 @@ def write_past_minutes_when_quit(current_id, activity_duration,
     task["history"][today].append({
         "work_started_at": work_started_at, 
         "work_stopped_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
-        "hours": round(total_work_minutes / 60, 1),
+        "minutes": total_work_minutes,
     })
     
     # Save the updated data back to the file
