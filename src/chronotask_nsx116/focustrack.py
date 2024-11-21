@@ -5,11 +5,12 @@ import threading
 from chronotask_nsx116.interval_timer import IntervalTimer
 from chronotask_nsx116.settings import Settings, Files
 from chronotask_nsx116.writing_to_task import write_past_minutes_when_quit
+from chronotask_nsx116.writing_to_task import get_global_id_by_current_id
 
 
 class FocusTrack:
-    def __init__(self, task_manager_settings):
-        self.settings = task_manager_settings
+    def __init__(self, task_manager):
+        self.settings = task_manager.settings
         self.files = Files()
         self.last_activity_time = time.time()
         self.stop_timer = False
@@ -19,6 +20,7 @@ class FocusTrack:
         self.interval_timer = IntervalTimer(self)
         self.activity_duration = self.interval_timer.activity_duration
         self.work_started_at = None
+        self.sorted_ids = task_manager.sorted_ids
 
 
     def reset_activity_timer(self):
@@ -35,10 +37,10 @@ class FocusTrack:
                         self.activity_timer_pause = True  # Pause the activity timer
             time.sleep(1)  # Check every second
 
-    def update_activity_timer(self, current_id):
+    def update_activity_timer(self, global_id):
         """Continuously updates the activity timer and logs every minute."""
         while not self.stop_timer:
-            self.interval_timer.run(current_id)
+            self.interval_timer.run(global_id)
 
     def on_mouse_move(self, x, y):
         """Handler for mouse movement activity."""
@@ -66,6 +68,7 @@ class FocusTrack:
         )
 
         self.work_started_at = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+        global_id = get_global_id_by_current_id(current_id, self.sorted_ids)
 
 
         def write_starting_time_to_file():
@@ -87,11 +90,11 @@ class FocusTrack:
         inactivity_thread.start()
 
         # Start the activity timer thread (no recursion, just a loop)
-        activity_timer_thread = threading.Thread(target=self.update_activity_timer, args=(current_id,))
+        activity_timer_thread = threading.Thread(target=self.update_activity_timer, args=(global_id,))
         activity_timer_thread.start()
 
         # Start the thread that waits for user input to quit
-        quit_thread = threading.Thread(target=self.wait_for_quit_input, args=(current_id,))
+        quit_thread = threading.Thread(target=self.wait_for_quit_input, args=(global_id,))
         quit_thread.start()
 
         # Join threads to allow for clean shutdown
@@ -103,12 +106,12 @@ class FocusTrack:
         mouse_listener.stop()
         keyboard_listener.stop()
 
-    def wait_for_quit_input(self, current_id):
+    def wait_for_quit_input(self, global_id):
         """Waits for user input 'quit' and stops the timer."""
         user_input = input("Type 'q' to stop the timer: \n")
         if user_input.strip().lower() == 'q':
             self.stop_timer = True
-            write_past_minutes_when_quit(current_id, self.interval_timer.activity_duration,
+            write_past_minutes_when_quit(global_id, self.interval_timer.activity_duration,
                                          self.work_started_at, self.interval_timer.total_work_minutes)
             self.write_summary_to_file()
 

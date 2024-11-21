@@ -5,13 +5,13 @@ from pathlib import Path
 from collections import defaultdict
 
 
-def write_total_activity_to_task(data_file, current_id, settings):
+def write_total_activity_to_task(data_file, global_id, settings):
     #settings = Settings()
     # files = Files()
     data = load_data(data_file)
     tasks = data.get("tasks")  
     sorted_ids = data.get("sorted_ids")
-    task_id = get_global_id_by_current_id(current_id, sorted_ids)
+    task_id = str(global_id)
     if tasks:
         for item in tasks:
             if task_id == item.get("global_id"):
@@ -36,7 +36,7 @@ def get_global_id_by_current_id(task_id, sorted_ids):
         #else:
         #    print(f"No task with {task_id} found")
 
-def write_past_minutes_when_quit(current_id, activity_duration, 
+def write_past_minutes_when_quit(global_id, activity_duration, 
                                  work_started_at, total_work_minutes):
     files = Files()
     data = load_data(files.data_file)
@@ -44,7 +44,7 @@ def write_past_minutes_when_quit(current_id, activity_duration,
     sorted_ids = data.get("sorted_ids", {})
     
     # Get the task's global ID
-    task_id = get_global_id_by_current_id(current_id, sorted_ids)
+    task_id = global_id
     
     if not tasks:
         print("No tasks available.")

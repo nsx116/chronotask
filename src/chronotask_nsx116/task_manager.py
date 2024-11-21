@@ -35,7 +35,7 @@ class TaskManager:
         # self.global_id = self.load_global_id()
         # self.load_tasks()  # Load tasks from file on initialization
         # self.load_sorted_ids() 
-        self.timer = FocusTrack(self.settings)
+        self.timer = FocusTrack(self)
 
     # Add a new task
     def add_task(self, text, due_date=None, project=None, tag=None, value=None):

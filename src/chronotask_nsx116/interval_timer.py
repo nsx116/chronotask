@@ -34,9 +34,9 @@ class IntervalTimer:
             # print(f"Notification sound located at: {self.notification_sound}")
         self.pomodoro_summary = self.files.pomodoro_summary_file
 
-    def run(self, current_id):
+    def run(self, global_id):
         self.update_activity_timer()
-        self.registrator(current_id)
+        self.registrator(global_id)
         time.sleep(1)
 
     def update_activity_timer(self):
@@ -75,11 +75,11 @@ class IntervalTimer:
                 if 0 < self.rest_duration < self.settings.long_rest_duration:
                     self.resting_for_minute = True
 
-    def registrator(self, current_id):
+    def registrator(self, global_id):
         if self.pomodoro_finish: 
             message = f"Pomodoro #{self.pomodoro_count} complete! Time for a break."
             self.send_notification(message)
-            write_total_activity_to_task(self.files.data_file, current_id, self.settings)
+            write_total_activity_to_task(self.files.data_file, global_id, self.settings)
             self.pomodoro_finish = False
         if self.long_rest_start:
             message = f"Long rest for {self.settings.long_rest_duration // 60} minutes."
