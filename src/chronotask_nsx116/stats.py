@@ -49,7 +49,7 @@ def make_minutes_by_date_plot(year, month, data):
     # Plotting with plotext
     # plt.clear_plot()
     plt.title(f"Work Hours by Date: {calendar.month_name[month]} {year}")
-    plt.bar(x_labels, y_values, label="Hours", width = 1 / 5)
+    plt.bar(x_labels, y_values, label="Hours", width = 2 / 5)
     plt.xlabel("Date")
     plt.ylabel("Hours")
     plt.theme("pro")
