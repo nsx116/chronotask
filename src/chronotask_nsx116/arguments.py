@@ -78,7 +78,7 @@ def parse_args():
 def handle_add(manager, args):
     # Handle the 'add' action to add a new task
     manager.add_task(args.text, args.date, args.project, args.tag, args.val)
-    print(f"handle.add task added: {args.text}")
+    print(f"Task has been added: {args.text}")
 
 def handle_list(manager, args):
     # Handle task-specific actions based on task ID.

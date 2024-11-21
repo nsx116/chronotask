@@ -55,7 +55,6 @@ class TaskManager:
         task["total_work"] = 0
         task["history"] = {}
         self.data["tasks"].append(task)
-        print(self.tasks)
         save_data(self.data_file, self.data)
 
     def mark_task_done(self, current_id):
@@ -68,6 +67,8 @@ class TaskManager:
                 break  # Exit loop once the task is found
         if task:
             task["status"] = "done"
+            task["date_done"] = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+            task["date_dismissed"] = None
             save_data(self.data_file, self.data)  # Save changes to file
             print(f"Task with ID {task_id} has been marked as done.")
         else:
@@ -83,6 +84,8 @@ class TaskManager:
                 break  # Exit loop once the task is found
         if task:
             task["status"] = "active"
+            task["date_done"] = None
+            task["date_dismissed"] = None
             save_data(self.data_file, self.data)  # Save changes to file
             print(f"Task with ID {task_id} has been marked as active.")
         else:
@@ -99,6 +102,8 @@ class TaskManager:
                 break  # Exit loop once the task is found
         if task:
             task["status"] = "dismissed"
+            task["date_dismissed"] = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+            task["date_done"] = None
             save_data(self.data_file, self.data)  # Save changes to file
             print(f"Task with ID {task_id} has been dismissed.")
         else:
@@ -164,7 +169,13 @@ class TaskManager:
         # Save updated settings back to the data file
         self.data["settings"] = self.settings.to_dict()  # Update the settings in the data dictionary
         save_data(self.data_file, self.data)  # Save the updated data
-        print("Updated settings:", self.settings)
+        print(
+            f"Updated settings:\n"
+            f"    Work: {int(self.settings.work_duration / 60)} minutes\n"
+            f"    Short rest: {int(self.settings.short_rest_duration / 60)} minutes\n"
+            f"    Long rest: {int(self.settings.long_rest_duration / 60)} minutes\n"
+            f"    Pomodoros before long rest: {self.settings.pomodoros_before_long_rest}\n"
+            f"    Inactivity limit: {self.settings.inactivity_limit} seconds\n")
 
     def start_task(self, current_id):
         self.timer.start(current_id)

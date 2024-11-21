@@ -78,7 +78,7 @@ def write_past_minutes_when_quit(current_id, activity_duration,
 def save_data(data_file, data):
     with open(data_file, 'w') as file:
         json.dump(data, file, indent=4)
-    print(f"Tasks saved to {data_file}")
+    # print(f"Tasks saved to {data_file}")
     
 
 def load_data(data_file):
