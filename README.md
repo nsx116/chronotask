@@ -2,6 +2,7 @@
 
 ChronoTask is a task management application designed to help you manage and
 track your tasks effectively using a Pomodoro timer with activity detection.
+Inspired by TaskWarrior
 
 ## Features
 - **Add a Task**: Add a new task to your task list.
