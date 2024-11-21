@@ -36,7 +36,6 @@ class TaskManager:
         # self.load_sorted_ids() 
         self.timer = FocusTrack(self.settings)
 
-
     # Add a new task
     def add_task(self, text, due_date=None, project=None, tag=None, value=None):
         task = {}
@@ -57,7 +56,6 @@ class TaskManager:
         self.data["tasks"].append(task)
         print(self.tasks)
         save_data(self.data_file, self.data)
-
 
     def mark_task_done(self, current_id):
         task_id = get_global_id_by_current_id(current_id, self.sorted_ids)
@@ -119,7 +117,6 @@ class TaskManager:
                 break  # Exit loop after deleting the task
         if not task_found:
             print(f"Task with ID {task_id} not found.")
-
 
     def modify_task(self, current_id, **kwargs):
         task_id = get_global_id_by_current_id(current_id, self.sorted_ids)
@@ -243,5 +240,3 @@ class TaskManager:
                     print("No tasks with status: active")
             self.data["sorted_ids"] = self.sorted_ids
             save_data(self.data_file, self.data)
-
-    
