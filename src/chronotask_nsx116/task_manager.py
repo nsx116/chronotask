@@ -10,6 +10,7 @@ import uuid
 from chronotask_nsx116.focustrack import FocusTrack 
 from chronotask_nsx116.settings import Settings, Files
 from chronotask_nsx116.writing_to_task import load_data, save_data, get_global_id_by_current_id
+from chronotask_nsx116.stats import make_minutes_by_date_plot
 
 class TaskManager:
     def __init__(self):
@@ -240,3 +241,12 @@ class TaskManager:
                     print("No tasks with status: active")
             self.data["sorted_ids"] = self.sorted_ids
             save_data(self.data_file, self.data)
+
+    def stats(self, year, month):
+        make_minutes_by_date_plot(year, month, self.data)
+
+
+
+
+
+

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import calendar
 
 
-def make_minutes_by_date_plot(data, year, month):
+def make_minutes_by_date_plot(year, month, data):
     """
     Creates a plot of minutes by date for a given year and month.
 
@@ -40,17 +40,23 @@ def make_minutes_by_date_plot(data, year, month):
         return
 
     # Prepare data for plotting
-    x_labels = list(minutes_by_date.keys())  # Dates (x-axis)
-    y_values = list(minutes_by_date.values())  # Total minutes (y-axis)
+    dates = list(minutes_by_date.keys())  # Dates (x-axis)
+    x_labels = [date.split('-')[-1] for date in dates]
+    # y_values = list(minutes_by_date.values())  # Total minutes (y-axis)
+    y_values = [round(minutes / 60, 1) for minutes in minutes_by_date.values()]  # Total minutes (y-axis)
+    print(x_labels)
 
     # Plotting with plotext
     # plt.clear_plot()
-    plt.title(f"Work Minutes by Date: {calendar.month_name[month]} {year}")
-    plt.bar(x_labels, y_values, label="Minutes")
+    plt.title(f"Work Hours by Date: {calendar.month_name[month]} {year}")
+    plt.bar(x_labels, y_values, label="Hours", width = 1 / 5)
     plt.xlabel("Date")
-    plt.ylabel("Minutes")
+    plt.ylabel("Hours")
+    plt.theme("pro")
+    plt.plotsize(100, 20)
     # plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
     plt.show()
+"""
 
 # Example usage
 data = {
@@ -85,3 +91,4 @@ data = {
 }
 
 make_minutes_by_date_plot(data, 2024, 11)
+"""

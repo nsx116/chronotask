@@ -50,6 +50,10 @@ def parse_args():
     set_parser.add_argument("--pomodoros", help="Pomodoros count before long rest")
     set_parser.add_argument("--inactivity", help="Inactivity duration in seconds to stop activity timer")
 
+    # Display monthly statistics
+    stats_parser = subparsers.add_parser("stats", help="Display monthly statistics")
+    stats_parser.add_argument("year_month", help="Year and month (e.g., 2024-10)")
+
     return parser.parse_args()
 
 # Commands
@@ -99,6 +103,14 @@ def handle_set(manager, args):
         pomodoros=int(args.pomodoros) if args.pomodoros else None,
         inactivity=int(args.inactivity) if args.inactivity else None,
     )
+
+def handle_stats(manager, args):
+    try:
+        year, month = map(int, args.year_month.split("-"))
+        manager.stats(year, month)
+    except ValueError:
+        print("Invalid format for year and month. Please use YYYY-MM (e.g., 2024-10).")
+
 """
 def handle_set(manager, args):
     # Convert argument values to integers if they are provided, otherwise leave as None
