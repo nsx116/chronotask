@@ -57,7 +57,7 @@ def parse_args():
     id_subparsers.add_parser("start", help="Start a task")
 
     # -------------------- POMODORO TIMER SETTINGS --------------------
-    set_parser = subparsers.add_parser("set", help="Set pomodoro-timer settings")
+    set_parser = subparsers.add_parser("set", help="Set pomodoro-timer settings, without arguments prints current settings")
     set_parser.add_argument("--work", type=int, help="Work duration in minutes")
     set_parser.add_argument("--short-rest", type=int, help="Short rest duration in minutes")
     set_parser.add_argument("--long-rest", type=int, help="Long rest duration in minutes")
@@ -78,7 +78,7 @@ def parse_args():
 def handle_add(manager, args):
     # Handle the 'add' action to add a new task
     manager.add_task(args.text, args.date, args.project, args.tag, args.val)
-    print(f"Task has been added: {args.text}")
+    print("Task has been added.")
 
 def handle_list(manager, args):
     # Handle task-specific actions based on task ID.
@@ -107,7 +107,7 @@ def handle_id_command(manager, args):
         print(f"Modifying task {args.task_id}")
     elif args.task_action == "delete":
         manager.delete_task(args.task_id)
-        print(f"Deleting task {args.task_id}")
+        # print(f"Deleting task {args.task_id}")
     elif args.task_action == "start":
         print(f"Starting task {args.task_id}")
         manager.start_task(args.task_id)

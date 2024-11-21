@@ -26,11 +26,15 @@ def write_total_activity_to_task(data_file, current_id, settings):
 
 def get_global_id_by_current_id(task_id, sorted_ids):
     task_id = str(task_id)
+    found = False                                   # added line
     for current_id, global_id in sorted_ids.items():
         if task_id == current_id:
             return global_id 
-        else:
+    if not found:
             print(f"No task with {task_id} found")
+    return None                                       # added line
+        #else:
+        #    print(f"No task with {task_id} found")
 
 def write_past_minutes_when_quit(current_id, activity_duration, 
                                  work_started_at, total_work_minutes):

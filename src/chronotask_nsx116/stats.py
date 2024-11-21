@@ -44,7 +44,6 @@ def make_minutes_by_date_plot(year, month, data):
     x_labels = [date.split('-')[-1] for date in dates]
     # y_values = list(minutes_by_date.values())  # Total minutes (y-axis)
     y_values = [round(minutes / 60, 1) for minutes in minutes_by_date.values()]  # Total minutes (y-axis)
-    print(x_labels)
 
     # Plotting with plotext
     # plt.clear_plot()
