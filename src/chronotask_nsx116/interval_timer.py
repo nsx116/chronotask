@@ -1,10 +1,11 @@
 import os
+# Hides Pygame's greeting message
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 import time
 import subprocess
 from chronotask_nsx116.writing_to_task import write_total_activity_to_task
-from chronotask_nsx116.settings import Settings
+from chronotask_nsx116.settings import Settings, Files
 import chronotask_nsx116.data
 import importlib.resources
 
@@ -12,9 +13,9 @@ class IntervalTimer:
     def __init__(self, pomodoro_timer):  
         pygame.mixer.init()
         self.timer = pomodoro_timer
-        self.settings = Settings()
-        self.activity_duration = 0  
-        self.rest_duration = 0
+        self.files = Files()
+        self.activity_duration = 0 # Activity since start  
+        self.rest_duration = 0     # Rest pause duration
         self.pomodoro_count = 0
         self.pomodoro_finish = False
         self.total_work_minutes = 0
@@ -27,11 +28,11 @@ class IntervalTimer:
         self.long_rest_start = False
         self.long_rest_finish = False
         self.active_for_minute = False
-        self.settings = Settings()             
+        self.settings = pomodoro_timer.settings
         with importlib.resources.as_file(importlib.resources.files(chronotask_nsx116.data) / 'notification.wav') as path:
             self.notification_sound = str(path)  # Convert to string if needed by your code
-            print(f"Notification sound located at: {self.notification_sound}")
-        self.pomodoro_summary = self.settings.pomodoro_summary_file
+            # print(f"Notification sound located at: {self.notification_sound}")
+        self.pomodoro_summary = self.files.pomodoro_summary_file
 
     def run(self, current_id):
         self.update_activity_timer()
@@ -69,7 +70,7 @@ class IntervalTimer:
                 if self.rest_duration >= self.settings.long_rest_duration:
                     self.long_rest_finish = True
                     self.change_to_work()
-            elif self.rest_duration % 60 == 0:
+            if self.rest_duration % 60 == 0:
                 self.total_rest_minutes += 1
                 if 0 < self.rest_duration < self.settings.long_rest_duration:
                     self.resting_for_minute = True
@@ -78,10 +79,7 @@ class IntervalTimer:
         if self.pomodoro_finish: 
             message = f"Pomodoro #{self.pomodoro_count} complete! Time for a break."
             self.send_notification(message)
-            write_total_activity_to_task(self.settings.tasks_file, 
-                                         self.settings.sorted_ids_file, 
-                                         current_id,
-                                         self.total_work_minutes)
+            write_total_activity_to_task(self.files.data_file, current_id, self.settings)
             self.pomodoro_finish = False
         if self.long_rest_start:
             message = f"Long rest for {self.settings.long_rest_duration // 60} minutes."
@@ -103,7 +101,7 @@ class IntervalTimer:
             print(f"Active for {self.total_work_minutes} minute(s).")
             self.active_for_minute = False
         if self.resting_for_minute:
-            print(f"Resting for {self.total_work_minutes} minute(s).")
+            print(f"Resting for {self.rest_duration // 60} minute(s).")
             self.resting_for_minute = False
 
 
@@ -113,7 +111,7 @@ class IntervalTimer:
         try:
             pygame.mixer.music.load(self.notification_sound)
             pygame.mixer.music.play()
-            print("Notification sound played.")
+            # print("Notification sound played.")
         except pygame.error as e:
             print(f"Failed to play sound: {e}")
 

@@ -3,18 +3,23 @@ from pynput import mouse, keyboard
 import time
 import threading
 from chronotask_nsx116.interval_timer import IntervalTimer
-from chronotask_nsx116.settings import Settings
+from chronotask_nsx116.settings import Settings, Files
+from chronotask_nsx116.writing_to_task import write_past_minutes_when_quit
 
 
 class FocusTrack:
-    def __init__(self):
-        self.settings = Settings()
+    def __init__(self, task_manager_settings):
+        self.settings = task_manager_settings
+        self.files = Files()
         self.last_activity_time = time.time()
         self.stop_timer = False
         self.working = True
         self.activity_timer_pause = False
-        self.pomodoro_summary = self.settings.pomodoro_summary_file
+        self.pomodoro_summary = self.files.pomodoro_summary_file
         self.interval_timer = IntervalTimer(self)
+        self.activity_duration = self.interval_timer.activity_duration
+        self.work_started_at = None
+
 
     def reset_activity_timer(self):
         """Resets the last activity time when there is user activity."""
@@ -51,6 +56,17 @@ class FocusTrack:
 
     def start(self, current_id):
         """Starts the timer, inactivity checker, and sets up activity listeners."""
+        print(
+            f"Timer settings:\n"
+            f"    Work: {int(self.settings.work_duration / 60)} minutes\n"
+            f"    Short rest: {int(self.settings.short_rest_duration / 60)} minutes\n"
+            f"    Long rest: {int(self.settings.long_rest_duration / 60)} minutes\n"
+            f"    Pomodoros before long rest: {self.settings.pomodoros_before_long_rest}\n"
+            f"    Inactivity limit: {self.settings.inactivity_limit} seconds\n"
+        )
+
+        self.work_started_at = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+
 
         def write_starting_time_to_file():
             with open(self.pomodoro_summary, 'a') as f:
@@ -75,7 +91,7 @@ class FocusTrack:
         activity_timer_thread.start()
 
         # Start the thread that waits for user input to quit
-        quit_thread = threading.Thread(target=self.wait_for_quit_input)
+        quit_thread = threading.Thread(target=self.wait_for_quit_input, args=(current_id,))
         quit_thread.start()
 
         # Join threads to allow for clean shutdown
@@ -87,11 +103,13 @@ class FocusTrack:
         mouse_listener.stop()
         keyboard_listener.stop()
 
-    def wait_for_quit_input(self):
+    def wait_for_quit_input(self, current_id):
         """Waits for user input 'quit' and stops the timer."""
         user_input = input("Type 'q' to stop the timer: \n")
         if user_input.strip().lower() == 'q':
             self.stop_timer = True
+            write_past_minutes_when_quit(current_id, self.interval_timer.activity_duration,
+                                         self.work_started_at, self.interval_timer.total_work_minutes)
             self.write_summary_to_file()
 
     def write_summary_to_file(self):
