@@ -27,6 +27,17 @@ track your tasks effectively using a Pomodoro timer with activity detection.
     - start: Start the Pomodoro timer for a given task, with activity 
     detection to stop the timer if inactivity exceeds a set interval.
 
+- **Set settings**:
+    chronotask set
+                    --work=25
+                    --short-rest=5
+                    --long-rest=15
+                    --pomodoros=4
+                    --inactivity=90
+
+- **Montly statistics plot**:
+    chronotask stats YYYY-MM
+
 ## Examples
 - **Add a new task**:
     ```bash
@@ -43,6 +54,14 @@ track your tasks effectively using a Pomodoro timer with activity detection.
 - **Start the Pomodore timer for the task with ID 1**:
     ```bash
     chronotask id 1 start 
+
+- **Set inactivity period to 60 seconds**:
+    ```bash
+    chronotask set --inactivity=60
+
+- **Show daily work hours for requested year and month**:
+    ```bash
+    chronotask stats 2024-10
 
 ## Requirements
   - Python > 3.8
@@ -66,6 +85,7 @@ track your tasks effectively using a Pomodoro timer with activity detection.
 ChronoTask requires the following Python packages, which will be installed
 with pipx during installation:
 
+- pytext
 - pynput
 - pygame
 - appdirs
