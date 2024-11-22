@@ -80,7 +80,7 @@ Inspired by TaskWarrior
 
     ```bash
     curl -LO https://github.com/nsx116/chronotask/raw/main/dist/chronotask_nsx116-0.0.1-py3-none-any.whl && \
-    pipx install chronotask_nsx116-0.0.1-py3-none-any.whl
+    pipx install ./chronotask_nsx116-0.0.1-py3-none-any.whl
 
 - **If issue with plotext package occurs, install it manually and inject to the 
 chronotask-nsx116 package**:
