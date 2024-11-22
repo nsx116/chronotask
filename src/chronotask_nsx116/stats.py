@@ -18,6 +18,19 @@ def make_minutes_by_date_plot(year, month, data):
         datetime(year, month, day).strftime("%Y-%m-%d") for day in range(1, num_days + 1)
     ]
 
+    # List of weekday abbreviations
+    weekdays = ["mo", "tu", "we", "th", "fr", "su", "sa"]
+
+    x_labels = [
+        f"{date.split('-')[-1]}{weekdays[calendar.weekday(year, month, int(date.split('-')[-1]))]}"
+        for date in dates
+    ]
+
+    # Generate the weekday list
+    week_days = [weekdays[calendar.weekday(year, month, day)] for day in range(1, num_days + 1)]
+
+    # print(week_days)
+
     # Initialize a dictionary to store total minutes per date
     minutes_by_date = {date: 0 for date in dates}
 
@@ -40,54 +53,17 @@ def make_minutes_by_date_plot(year, month, data):
         return
 
     # Prepare data for plotting
-    dates = list(minutes_by_date.keys())  # Dates (x-axis)
-    x_labels = [date.split('-')[-1] for date in dates]
-    # y_values = list(minutes_by_date.values())  # Total minutes (y-axis)
+    # dates = list(minutes_by_date.keys())  # Dates (x-axis)
+    # x_labels = [date.split('-')[-1] for date in dates]
     y_values = [round(minutes / 60, 1) for minutes in minutes_by_date.values()]  # Total minutes (y-axis)
 
     # Plotting with plotext
-    # plt.clear_plot()
     plt.title(f"Work Hours by Date: {calendar.month_name[month]} {year}")
-    plt.bar(x_labels, y_values, label="Hours", width = 2 / 5)
+    plt.bar(x_labels, y_values, width = 2 / 5, color=44)
     plt.xlabel("Date")
     plt.ylabel("Hours")
     plt.theme("pro")
     plt.plotsize(100, 20)
-    # plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
     plt.show()
-"""
-
-# Example usage
-data = {
-    "tasks": [
-        {
-            "text": "Write work minutes by dates and tasks to json",
-            "date": "2024-11-19",
-            "project": None,
-            "tag": None,
-            "value": None,
-            "global_id": "de7fcee3-aec6-42e5-8317-171a00ecc49c",
-            "date_added": "2024-11-19 17:13:49",
-            "date_done": None,
-            "date_dismissed": None,
-            "status": "done",
-            "total_work": 192.1,
-            "history": {
-                "2024-11-19": [
-                    {"work_started_at": "2024-11-19 18-01-26", "work_stopped_at": "2024-11-19 18:02:36", "minutes": 0.0},
-                    {"work_started_at": "2024-11-19 18-50-02", "work_stopped_at": "2024-11-19 19:05:20", "minutes": 0.2},
-                    {"work_started_at": "2024-11-19 19-05-24", "work_stopped_at": "2024-11-19 20:56:33", "minutes": 1.2},
-                ],
-                "2024-11-20": [
-                    {"work_started_at": "2024-11-20 13-06-18", "work_stopped_at": "2024-11-20 13:06-24", "minutes": 0.0},
-                    {"work_started_at": "2024-11-20 13-07-18", "work_stopped_at": "2024-11-20 13:31:50", "minutes": 0.3},
-                    {"work_started_at": "2024-11-20 13-32-16", "work_stopped_at": "2024-11-20 13:33:24", "minutes": 1},
-                    {"work_started_at": "2024-11-20 13-54-27", "work_stopped_at": "2024-11-20 15:22:36", "minutes": 50},
-                ],
-            },
-        }
-    ]
-}
-
-make_minutes_by_date_plot(data, 2024, 11)
-"""
+    # plt.themes()
+    # plt.xticks(rotation=45)  # Rotate x-axis labels for better readability

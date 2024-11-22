@@ -183,7 +183,7 @@ class TaskManager:
 
     # Printing tasks neatly 
     def print_tasks(self):
-        table_data = [['ID', '[*]', 'Text', 'Created', 'Due Date', 'Total work,\nhours']]
+        table_data = [['ID', '[*]', 'Text', 'Created', 'Hours']]
         for current_id, global_id in self.sorted_ids.items():
             for item in self.tasks:
                 if global_id == item.get("global_id"):
@@ -197,12 +197,13 @@ class TaskManager:
                 checkbox = "[-]"
             else:
                 checkbox = "[?]"  # For any unknown status
-            wrapped_lines = textwrap.wrap(task["text"], width=39)
-            padded_lines = [line.ljust(35) for line in wrapped_lines]
+            wrapped_lines = textwrap.wrap(task["text"], width=49)
+            padded_lines = [line.ljust(49) for line in wrapped_lines]
             task_text_wrapped = "\n".join(padded_lines)
-            date_added = task["date_added"]
+            datetime_string = task["date_added"]
+            date_added = datetime_string.split(" ")[0]
             total_work_hours = round(task["total_work"] / 60, 1)
-            table_data.append([current_id, checkbox, task_text_wrapped, date_added, task["date"], total_work_hours])
+            table_data.append([current_id, checkbox, task_text_wrapped, date_added, total_work_hours])
         table = AsciiTable(table_data)
         print(table.table)
 
