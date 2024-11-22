@@ -77,36 +77,41 @@ class IntervalTimer:
 
     def registrator(self, global_id):
         if self.pomodoro_finish: 
-            message = f"Pomodoro #{self.pomodoro_count} complete! Time for a break."
+            message = f"\rPomodoro #{self.pomodoro_count} complete! Time for a break."
             self.send_notification(message)
             write_total_activity_to_task(self.files.data_file, global_id, self.settings)
             self.pomodoro_finish = False
         if self.long_rest_start:
-            message = f"Long rest for {self.settings.long_rest_duration // 60} minutes."
-            print(message)
+            message = f"\rLong rest for {self.settings.long_rest_duration // 60} minutes."
+            print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
+            print(message, end='', flush=True) # here
             self.long_rest_start = False
         if self.long_rest_finish:
-            message = "Short rest finished! Time for a work."
+            message = "\rShort rest finished! Time for a work."
             self.send_notification(message)
             self.long_rest_finish = False
         if self.short_rest_start:
-            message = f"Short rest for {self.settings.short_rest_duration // 60} minutes."
-            print(message)
+            message = f"\rShort rest for {self.settings.short_rest_duration // 60} minutes."
+            print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
+            print(message, end='', flush=True) # here
             self.short_rest_start = False
         if self.short_rest_finish:
-            message = "Short rest finished! Time for a work."
+            message = "\rShort rest finished! Time for a work."
             self.send_notification(message)
             self.short_rest_finish = False
         if self.active_for_minute:
-            print(f"Active for {self.total_work_minutes} minute(s).")
+            print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
+            print(f"\rActive for {self.total_work_minutes} minute(s).", end='', flush=True)
             self.active_for_minute = False
         if self.resting_for_minute:
-            print(f"Resting for {self.rest_duration // 60} minute(s).")
+            print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
+            print(f"\rResting for {self.rest_duration // 60} minute(s).", end='', flush=True)
             self.resting_for_minute = False
 
 
     def send_notification(self, message):
-        print(message)
+        print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
+        print(message, end='', flush=True)
         subprocess.run(['notify-send', "Pomodoro timer", message])
         try:
             pygame.mixer.music.load(self.notification_sound)

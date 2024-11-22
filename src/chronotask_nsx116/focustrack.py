@@ -33,7 +33,8 @@ class FocusTrack:
             if self.working:
                 if time.time() - self.last_activity_time > self.settings.inactivity_limit:  # Inactivity period
                     if not self.activity_timer_pause:
-                        print(f"No activity for {self.settings.inactivity_limit} seconds, pausing timer {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                        print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
+                        print(f"\rNo activity for {self.settings.inactivity_limit} seconds, pausing timer {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", end='', flush=True)
                         self.activity_timer_pause = True  # Pause the activity timer
             time.sleep(1)  # Check every second
 
@@ -46,14 +47,16 @@ class FocusTrack:
         """Handler for mouse movement activity."""
         self.reset_activity_timer()
         if self.activity_timer_pause and self.working:  # If timer is paused, resume it
-            print(f"Resuming timer due to mouse activity.{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
+            print(f"\rResuming timer due to mouse activity.{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", end='', flush=True)
             self.activity_timer_pause = False
 
     def on_keyboard_event(self, key):
         """Handler for keyboard activity."""
         self.reset_activity_timer()
         if self.activity_timer_pause and self.working:  # If timer is paused, resume it
-            print(f"Resuming timer due to keyboard activity {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+            print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
+            print(f"\rResuming timer due to keyboard activity {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", end='', flush=True)
             self.activity_timer_pause = False
 
     def start(self, current_id):
@@ -113,7 +116,7 @@ class FocusTrack:
             self.stop_timer = True
             write_past_minutes_when_quit(global_id, self.interval_timer.activity_duration,
                                          self.work_started_at, self.interval_timer.total_work_minutes)
-            self.write_summary_to_file()
+            # self.write_summary_to_file()
 
     def write_summary_to_file(self):
         """Writes Pomodoros, work minutes, and rest minutes to a file."""
@@ -123,6 +126,7 @@ class FocusTrack:
             f.write(f"Total work minutes: {self.interval_timer.total_work_minutes}\n")
             f.write(f"Total rest minutes: {self.interval_timer.total_rest_minutes}\n")
             f.write("------------------------------------\n")
-        print(f"Pomodoro summary written to {self.pomodoro_summary}. Exiting...")
+        print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
+        print(f"Pomodoro summary written to {self.pomodoro_summary}. Exiting...", end='', flush=True)
 
 
