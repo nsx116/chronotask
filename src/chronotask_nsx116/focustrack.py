@@ -89,7 +89,7 @@ class FocusTrack:
         keyboard_listener.start()
 
         # Start the inactivity checker thread
-        inactivity_thread = threading.Thread(target=self.check_inactivity)
+        inactivity_thread = threading.Thread(target=self.check_inactivity, daemon=True) # daemon=True added
         inactivity_thread.start()
 
         # Start the activity timer thread (no recursion, just a loop)
