@@ -63,7 +63,7 @@ def make_minutes_by_date_plot(year, month, data):
     plt.xlabel("Date")
     plt.ylabel("Hours")
     plt.theme("pro")
-    plt.plotsize(100, 20)
+    plt.plotsize(100, 15)
     plt.show()
     # plt.themes()
     # plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
