@@ -82,10 +82,11 @@ def handle_add(manager, args):
     print("Task has been added.")
 
 def handle_list(manager, args):
-    # Handle task-specific actions based on task ID.
-    now = datetime.now()
-    year, month = now.year, now.month
-    manager.stats(year, month)
+    # Handle task-specific actions based on task ID. Commented lines is for
+    # show statistics for current month wiht list command
+    # now = datetime.now()
+    # year, month = now.year, now.month
+    # manager.stats(year, month)
     manager.list_tasks(args.status)       
 
 def handle_id_command(manager, args):

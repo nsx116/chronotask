@@ -19,7 +19,7 @@ def make_minutes_by_date_plot(year, month, data):
     ]
 
     # List of weekday abbreviations
-    weekdays = ["mo", "tu", "we", "th", "fr", "su", "sa"]
+    weekdays = ["mo", "tu", "we", "th", "fr", "sa", "su"]
 
     x_labels = [
         f"{date.split('-')[-1]}{weekdays[calendar.weekday(year, month, int(date.split('-')[-1]))]}"
