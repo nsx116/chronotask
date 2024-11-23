@@ -61,14 +61,14 @@ class FocusTrack:
 
     def start(self, current_id):
         """Starts the timer, inactivity checker, and sets up activity listeners."""
-        print(
-            f"Timer settings:\n"
-            f"    Work: {int(self.settings.work_duration / 60)} minutes\n"
-            f"    Short rest: {int(self.settings.short_rest_duration / 60)} minutes\n"
-            f"    Long rest: {int(self.settings.long_rest_duration / 60)} minutes\n"
-            f"    Pomodoros before long rest: {self.settings.pomodoros_before_long_rest}\n"
-            f"    Inactivity limit: {self.settings.inactivity_limit} seconds\n"
-        )
+        # print(
+            # f"Timer settings:\n"
+            # f"    Work: {int(self.settings.work_duration / 60)} minutes\n"
+            # f"    Short rest: {int(self.settings.short_rest_duration / 60)} minutes\n"
+            # f"    Long rest: {int(self.settings.long_rest_duration / 60)} minutes\n"
+            # f"    Pomodoros before long rest: {self.settings.pomodoros_before_long_rest}\n"
+            # f"    Inactivity limit: {self.settings.inactivity_limit} seconds\n"
+        # )
 
         self.work_started_at = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
         global_id = get_global_id_by_current_id(current_id, self.sorted_ids)
