@@ -69,7 +69,10 @@ def parse_args():
     stats_parser = subparsers.add_parser("stats", help="Display monthly statistics")
     stats_parser.add_argument(
         "year_month",
-        help="Year and month for statistics (format: YYYY-MM)"
+        nargs="?",
+        default=None,
+        help="Year and month for statistics (format: YYYY-MM). Defaults to \
+        current month if not provided"
     )
 
     return parser.parse_args()
@@ -129,76 +132,11 @@ def handle_set(manager, args):
 
 def handle_stats(manager, args):
     try:
-        year, month = map(int, args.year_month.split("-"))
+        if args.year_month is None:
+            now = datetime.now()
+            year, month = now.year, now.month
+        else:
+            year, month = map(int, args.year_month.split("-"))
         manager.stats(year, month)
     except ValueError:
         print("Invalid format for year and month. Please use YYYY-MM (e.g., 2024-10).")
-
-"""
-def handle_set(manager, args):
-    # Convert argument values to integers if they are provided, otherwise leave as None
-    manager.set_settings(
-        work=args.work,
-        short_rest=args.short_rest,
-        long_rest=args.long_rest,
-        pomodoros=args.pomodoros,
-        inactivity=args.inactivity,
-    )
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description="Add, list, id, delete")
-
-    # Create a subparser for the main commands (task, note, recurrent, leak)
-    subparsers = parser.add_subparsers(dest="action", help="Add, list, id)")
-
-    # -------------------- TASK COMMAND --------------------
-    # task_parser = subparsers.add_parser("task", help="Manage tasks")
-    # task_subparsers = task_parser.add_subparsers(dest="action", help="Task actions")
-
-    # 'add' command for tasks
-    add_parser = subparsers.add_parser("add", help="Add a new task")
-    add_parser.add_argument("text", help="Task description text")
-    add_parser.add_argument("--date", help="Due date for the task (format: YYYY-MM-DD)")
-    add_parser.add_argument("--project", help="Project name")
-    add_parser.add_argument("--tag", help="Tag")
-    add_parser.add_argument("--val", help="Value or priority")
-
-    # 'list' command for tasks
-    list_parser = subparsers.add_parser("list", help="List all tasks")
-    list_parser.add_argument('--status', nargs='*', choices=['all', 'active', 'done', 'dismissed'], help='List active tasks')
-
-    # Subparser for task-specific actions based on task ID
-    id_parser = subparsers.add_parser("id", help="Actions for a specific task")
-    id_parser.add_argument("task_id", type=int, help="ID of the task to operate on")
-    id_subparsers = id_parser.add_subparsers(dest="task_action", help="Task-specific actions")
-
-    # Task-specific actions: 'done', 'dismiss', 'mod', 'delete'
-    id_subparsers.add_parser("done", help="Mark task as done")
-    id_subparsers.add_parser("dismiss", help="Dismiss the task")
-    id_subparsers.add_parser("active", help="Mark task as active")
-    
-    mod_parser = id_subparsers.add_parser("mod", help="Modify a task")
-    mod_parser.add_argument("--text", help="New task description")
-    mod_parser.add_argument("--date", help="New due date")
-    mod_parser.add_argument("--project", help="New project")
-    mod_parser.add_argument("--tag", help="New tag")
-    mod_parser.add_argument("--value", type=int, help="New value or priority")
-
-    id_subparsers.add_parser("delete", help="Delete a task")
-    id_subparsers.add_parser("start", help="Start a task")
-    
-    # Set pomodoro-timer settings
-    set_parser = subparsers.add_parser("set", help="Set pomodoro-timer settings")
-    set_parser.add_argument("--work", help="Work duration in minutes")
-    set_parser.add_argument("--short-rest", help="Short rest duration in minutes")
-    set_parser.add_argument("--long-rest", help="Long rest duration in minutes")
-    set_parser.add_argument("--pomodoros", help="Pomodoros count before long rest")
-    set_parser.add_argument("--inactivity", help="Inactivity duration in seconds to stop activity timer")
-
-    # Display monthly statistics
-    stats_parser = subparsers.add_parser("stats", help="Display monthly statistics")
-    stats_parser.add_argument("year_month", help="Year and month (e.g., 2024-10)")
-
-    return parser.parse_args()
-"""
