@@ -101,7 +101,7 @@ class FocusTrack:
         quit_thread.start()
 
         # Join threads to allow for clean shutdown
-        inactivity_thread.join()
+        # inactivity_thread.join()
         activity_timer_thread.join()
         quit_thread.join()
 

@@ -57,6 +57,8 @@ def make_minutes_by_date_plot(year, month, data):
     # x_labels = [date.split('-')[-1] for date in dates]
     y_values = [round(minutes / 60, 1) for minutes in minutes_by_date.values()]  # Total minutes (y-axis)
 
+    # plt.interactive(True)
+
     # Plotting with plotext
     plt.title(f"Work Hours by Date: {calendar.month_name[month]} {year}")
     plt.bar(x_labels, y_values, width = 2 / 5, color=44)
@@ -64,6 +66,11 @@ def make_minutes_by_date_plot(year, month, data):
     # plt.ylabel("Hours")
     plt.theme("pro")
     plt.plotsize(100, 11)
+    plt.ylim(0)
+    largest = int(max(y_values))
+    for y in range(1, largest):
+        plt.hline(y, color=13)
+        print(y)
     plt.show()
     # plt.themes()
     # plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
