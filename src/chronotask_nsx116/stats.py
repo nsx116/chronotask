@@ -71,7 +71,10 @@ def make_minutes_by_date_plot(year, month, data):
     largest = int(max(y_values))
     for y in range(1, largest + 1):
         plt.hline(y, color=13)
-        print(y, largest)
+    # Draw vertical lines where x_label contains "mo"
+    for idx, label in enumerate(x_labels):
+        if "mo" in label:
+            plt.vline(idx, color=13)  # Use the index as the x-position
     plt.show()
     # plt.themes()
     # plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
