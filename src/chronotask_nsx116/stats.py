@@ -1,5 +1,5 @@
 import plotext as plt
-from datetime import datetime, timedelta
+from datetime import datetime
 import calendar
 
 
@@ -65,12 +65,13 @@ def make_minutes_by_date_plot(year, month, data):
     # plt.xlabel("Date")
     # plt.ylabel("Hours")
     plt.theme("pro")
+    # plt.yfrequency(7)
     plt.plotsize(100, 11)
     plt.ylim(0)
     largest = int(max(y_values))
-    for y in range(1, largest):
+    for y in range(1, largest + 1):
         plt.hline(y, color=13)
-        print(y)
+        print(y, largest)
     plt.show()
     # plt.themes()
     # plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
