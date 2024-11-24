@@ -132,7 +132,9 @@ class IntervalTimer:
         self.timer.working = True
         self.short_rest = False
         self.long_rest = False
-        self.timer.activity_timer_pause = False
+        # Set to False if want launch activity timer immediately after rest time
+        # finish, without keyboard or mouse activity checking
+        self.timer.activity_timer_pause = True
         self.activity_duration = 0
         self.rest_duration = 0
         self.timer.last_activity_time = time.time()
