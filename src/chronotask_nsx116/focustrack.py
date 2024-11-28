@@ -61,14 +61,6 @@ class FocusTrack:
 
     def start(self, current_id):
         """Starts the timer, inactivity checker, and sets up activity listeners."""
-        # print(
-            # f"Timer settings:\n"
-            # f"    Work: {int(self.settings.work_duration / 60)} minutes\n"
-            # f"    Short rest: {int(self.settings.short_rest_duration / 60)} minutes\n"
-            # f"    Long rest: {int(self.settings.long_rest_duration / 60)} minutes\n"
-            # f"    Pomodoros before long rest: {self.settings.pomodoros_before_long_rest}\n"
-            # f"    Inactivity limit: {self.settings.inactivity_limit} seconds\n"
-        # )
 
         self.work_started_at = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
         global_id = get_global_id_by_current_id(current_id, self.sorted_ids)
@@ -116,17 +108,6 @@ class FocusTrack:
             self.stop_timer = True
             write_past_minutes_when_quit(global_id, self.interval_timer.activity_duration,
                                          self.work_started_at, self.interval_timer.total_work_minutes)
-            # self.write_summary_to_file()
-
-    def write_summary_to_file(self):
-        """Writes Pomodoros, work minutes, and rest minutes to a file."""
-        with open(self.pomodoro_summary, 'a') as f:
-            f.write(f"Work stopped at:  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-            f.write(f"Pomodoros completed: {self.interval_timer.pomodoro_count}\n")
-            f.write(f"Total work minutes: {self.interval_timer.total_work_minutes}\n")
-            f.write(f"Total rest minutes: {self.interval_timer.total_rest_minutes}\n")
-            f.write("------------------------------------\n")
-        print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
-        print(f"Pomodoro summary written to {self.pomodoro_summary}. Exiting...", end='', flush=True)
-
+        else:
+            print("Invalid input. Type 'q' to stop the timer.")
 
