@@ -102,7 +102,27 @@ class FocusTrack:
         keyboard_listener.stop()
 
     def wait_for_quit_input(self, global_id):
-        """Waits for user input 'quit' and stops the timer."""
+        """Waits for user input 'q' and stops the timer."""
+        while not self.stop_timer:
+            try:
+                user_input = input("Type 'q' to stop the timer: \n").strip().lower()
+                if user_input == 'q':
+                    self.stop_timer = True
+                    write_past_minutes_when_quit(
+                        global_id,
+                        self.interval_timer.activity_duration,
+                        self.work_started_at,
+                        self.interval_timer.total_work_minutes,
+                    )
+                    print("Timer stopped.")
+                else:
+                    print("Invalid input. Type 'q' to stop the timer.")
+            except KeyboardInterrupt:
+                print("\nExiting due to keyboard interrupt.")
+                self.stop_timer = True
+                break
+"""
+    def wait_for_quit_input(self, global_id):
         user_input = input("Type 'q' to stop the timer: \n")
         if user_input.strip().lower() == 'q':
             self.stop_timer = True
@@ -110,4 +130,4 @@ class FocusTrack:
                                          self.work_started_at, self.interval_timer.total_work_minutes)
         else:
             print("Invalid input. Type 'q' to stop the timer.")
-
+"""
