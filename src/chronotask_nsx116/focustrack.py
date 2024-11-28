@@ -102,7 +102,10 @@ class FocusTrack:
         keyboard_listener.stop()
 
     def wait_for_quit_input(self, global_id):
-        """Waits for user input 'q' and stops the timer."""
+        """Waits for user input 'q' and stops the timer. Without the first line
+        hangs the program because input() is blocking function and block the 
+        program if previous unproper inuput had been put. With while input works
+        only once during the loop and release execution further after the loop"""
         while not self.stop_timer:
             try:
                 user_input = input("Type 'q' to stop the timer: \n").strip().lower()
