@@ -108,7 +108,8 @@ class FocusTrack:
         only once during the loop and release execution further after the loop"""
         while not self.stop_timer:
             try:
-                user_input = input("Type 'q' to stop the timer: \n").strip().lower()
+                # user_input = input("Type 'q' to stop the timer: \n").strip().lower()
+                user_input = input().strip().lower()
                 if user_input == 'q':
                     self.stop_timer = True
                     write_past_minutes_when_quit(
