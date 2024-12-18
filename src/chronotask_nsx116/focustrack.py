@@ -6,6 +6,7 @@ from chronotask_nsx116.interval_timer import IntervalTimer
 from chronotask_nsx116.settings import Settings, Files
 from chronotask_nsx116.writing_to_task import write_past_minutes_when_quit
 from chronotask_nsx116.writing_to_task import get_global_id_by_current_id
+from chronotask_nsx116.writing_to_task import write_at_start
 
 
 class FocusTrack:
@@ -62,9 +63,9 @@ class FocusTrack:
     def start(self, current_id):
         """Starts the timer, inactivity checker, and sets up activity listeners."""
 
-        self.work_started_at = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+        self.work_started_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         global_id = get_global_id_by_current_id(current_id, self.sorted_ids)
-
+        write_at_start(global_id, self.work_started_at)
 
         def write_starting_time_to_file():
             with open(self.pomodoro_summary, 'a') as f:
@@ -115,8 +116,6 @@ class FocusTrack:
                     write_past_minutes_when_quit(
                         global_id,
                         self.interval_timer.activity_duration,
-                        self.work_started_at,
-                        self.interval_timer.total_work_minutes,
                     )
                     print("Timer stopped.")
                 else:
