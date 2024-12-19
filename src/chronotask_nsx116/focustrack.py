@@ -67,11 +67,6 @@ class FocusTrack:
         global_id = get_global_id_by_current_id(current_id, self.sorted_ids)
         write_at_start(global_id, self.work_started_at)
 
-        def write_starting_time_to_file():
-            with open(self.pomodoro_summary, 'a') as f:
-                f.write(f"Work started at:  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-
-        write_starting_time_to_file()
         self.activity_timer_pause = False  # Start the timer immediately
 
         # Set up mouse and keyboard listeners
@@ -109,7 +104,6 @@ class FocusTrack:
         only once during the loop and release execution further after the loop"""
         while not self.stop_timer:
             try:
-                # user_input = input("Type 'q' to stop the timer: \n").strip().lower()
                 user_input = input().strip().lower()
                 if user_input == 'q':
                     self.stop_timer = True
@@ -124,13 +118,3 @@ class FocusTrack:
                 print("\nExiting due to keyboard interrupt.")
                 self.stop_timer = True
                 break
-"""
-    def wait_for_quit_input(self, global_id):
-        user_input = input("Type 'q' to stop the timer: \n")
-        if user_input.strip().lower() == 'q':
-            self.stop_timer = True
-            write_past_minutes_when_quit(global_id, self.interval_timer.activity_duration,
-                                         self.work_started_at, self.interval_timer.total_work_minutes)
-        else:
-            print("Invalid input. Type 'q' to stop the timer.")
-"""

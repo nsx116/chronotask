@@ -4,14 +4,6 @@ import calendar
 
 
 def make_minutes_by_date_plot(year, month, data):
-    """
-    Creates a plot of minutes by date for a given year and month.
-
-    Args:
-        data (dict): A dictionary containing tasks with history of work minutes by date.
-        year (int): The year for the plot.
-        month (int): The month for the plot.
-    """
     # Prepare all dates in the specified month
     num_days = calendar.monthrange(year, month)[1]
     dates = [
@@ -25,11 +17,6 @@ def make_minutes_by_date_plot(year, month, data):
         f"{date.split('-')[-1]}{weekdays[calendar.weekday(year, month, int(date.split('-')[-1]))]}"
         for date in dates
     ]
-
-    # Generate the weekday list
-    week_days = [weekdays[calendar.weekday(year, month, day)] for day in range(1, num_days + 1)]
-
-    # print(week_days)
 
     # Initialize a dictionary to store total minutes per date
     minutes_by_date = {date: 0 for date in dates}
@@ -45,7 +32,23 @@ def make_minutes_by_date_plot(year, month, data):
                 data_has_year_month = True  # Mark that data exists for the requested month
                 if date in minutes_by_date:
                     # Sum up all minutes for the date
-                    minutes_by_date[date] += sum(session["minutes"] for session in sessions)
+                    minutes_by_date[date] += sum(session.get("minutes", 0) for session in sessions)
+
+    # Calculate the average using for given month
+    total = sum(minutes_by_date.values())
+    today = datetime.now()
+    count = 0
+    last_non_zero_index = 1
+    if (year < today.year) or (year == today.year and month < today.month):
+        count = num_days
+    else:
+        for key, value in minutes_by_date.items():
+            count += 1
+            if value != 0:
+                last_non_zero_index = count  # Track the index of the last non-zero value
+        count = last_non_zero_index if count > 0 else 1
+
+    average = round(total / count / 60, 1) if count > 0 else 0
 
     # If no data for the requested year and month, print a message and exit
     if not data_has_year_month:
@@ -53,8 +56,6 @@ def make_minutes_by_date_plot(year, month, data):
         return
 
     # Prepare data for plotting
-    # dates = list(minutes_by_date.keys())  # Dates (x-axis)
-    # x_labels = [date.split('-')[-1] for date in dates]
     y_values = [round(minutes / 60, 1) for minutes in minutes_by_date.values()]  # Total minutes (y-axis)
 
     # plt.interactive(True)
@@ -62,10 +63,7 @@ def make_minutes_by_date_plot(year, month, data):
     # Plotting with plotext
     plt.title(f"Work Hours by Date: {calendar.month_name[month]} {year}")
     plt.bar(x_labels, y_values, width = 2 / 5, color=44)
-    # plt.xlabel("Date")
-    # plt.ylabel("Hours")
     plt.theme("pro")
-    # plt.yfrequency(7)
     plt.plotsize(100, 11)
     plt.ylim(0)
     largest = int(max(y_values))
@@ -76,5 +74,4 @@ def make_minutes_by_date_plot(year, month, data):
         if "mo" in label:
             plt.vline(idx, color=13)  # Use the index as the x-position
     plt.show()
-    # plt.themes()
-    # plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+    print(f"Sum: {round(total / 60, 1)} hours Count: {count} days Average: {average} hours/day")
