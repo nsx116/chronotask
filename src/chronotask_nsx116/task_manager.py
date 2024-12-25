@@ -1,10 +1,6 @@
 from terminaltables import AsciiTable
-from appdirs import user_data_dir
-from pathlib import Path
 from datetime import date, datetime
-from collections import defaultdict
 import os
-import json
 import textwrap
 import uuid
 from chronotask_nsx116.focustrack import FocusTrack 
@@ -14,7 +10,6 @@ from chronotask_nsx116.stats import make_minutes_by_date_plot
 
 class TaskManager:
     def __init__(self):
-        # self.settings = Settings()
         self.files = Files()
         self.data_dir = self.files.data_dir
         self.data_file = self.files.data_file
@@ -23,18 +18,6 @@ class TaskManager:
         self.sorted_ids = self.data.get("sorted_ids", {})
         self.tasks = self.data.get("tasks", [])  # Dictionary to store tasks by their global ID
         self.settings = Settings.from_dict(self.data.get("settings", {}))
-        # self.data["settings"] = self.settings.to_dict()  # Update the settings in the data dictionary
-        # self.data = {} # newly added
-        # self.sorted_ids = {} # newly added
-        # self.data = self.load_data(self.data_file)
-        # self.data = self.load_data(getattr(self, 'data_file', None) or 'data.json')
-        # self.sorted_ids = self.data["sorted_ids"] if self.data["sorted_ids"] else {}  # Dictionary to store tasks by their global ID
-        # self.tasks_file = self.settings.tasks_file
-        # self.sorted_ids_file = self.settings.sorted_ids_file
-        # self.global_id_file = self.settings.global_id_file
-        # self.global_id = self.load_global_id()
-        # self.load_tasks()  # Load tasks from file on initialization
-        # self.load_sorted_ids() 
         self.timer = FocusTrack(self)
 
     # Add a new task
@@ -149,7 +132,7 @@ class TaskManager:
 
     def set_settings(self, **kwargs):
         # Convert the current settings to a dictionary
-        settings_dict = self.settings.to_dict()
+        # settings_dict = self.settings.to_dict()
         
         # Define allowed keys and their corresponding attribute names in Settings
         allowed_keys = {
@@ -232,7 +215,6 @@ class TaskManager:
 
         elif status:
             print("done, dismissed, active in status")
-            valid_statuses = {"done", "dismissed", "active"}
             for item in reversed_tasks:
                 if item["status"] in status:  # Check if the color is blue
                     self.sorted_ids[current_id] = item["global_id"]
@@ -259,9 +241,3 @@ class TaskManager:
 
     def stats(self, year, month):
         make_minutes_by_date_plot(year, month, self.data)
-
-
-
-
-
-
