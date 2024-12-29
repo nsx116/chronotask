@@ -96,7 +96,7 @@ def handle_id_command(manager, args):
     # Handle task-specific actions based on task ID.
     if args.task_action == "done":
         manager.mark_task_done(args.task_id)
-        print(f"Marking task {args.task_id} as done")
+        # print(f"Marking task {args.task_id} as done")
     elif args.task_action == "dismiss":
         manager.dismiss_task(args.task_id)
         print(f"Dismissing task {args.task_id}")
@@ -117,7 +117,7 @@ def handle_id_command(manager, args):
         manager.delete_task(args.task_id)
         # print(f"Deleting task {args.task_id}")
     elif args.task_action == "start":
-        print(f"Starting task {args.task_id}")
+        print(f"Starting task {args.task_id} at {datetime.now().strftime('%Y-%m-%d %H:%M')}")
         manager.start_task(args.task_id)
 
 def handle_set(manager, args):
