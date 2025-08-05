@@ -76,7 +76,7 @@ class IntervalTimer:
 
     def registrator(self, global_id):
         if self.pomodoro_finish: 
-            message = f"\rPomodoro #{self.pomodoro_count} complete! Time for a break."
+            message = f"\rPomodoro #{self.pomodoro_count} complete! Time to relax and store focus points"
             self.send_notification(message)
             write_total_activity_to_task(self.files.data_file, global_id, self.settings)
             self.pomodoro_finish = False
@@ -86,7 +86,7 @@ class IntervalTimer:
             print(message, end='', flush=True) # here
             self.long_rest_start = False
         if self.long_rest_finish:
-            message = "\rShort rest finished! Time for a work."
+            message = "\rLong rest finished! Time for a work"
             self.send_notification(message)
             self.long_rest_finish = False
         if self.short_rest_start:
@@ -95,7 +95,7 @@ class IntervalTimer:
             print(message, end='', flush=True) # here
             self.short_rest_start = False
         if self.short_rest_finish:
-            message = "\rShort rest finished! Time for a work."
+            message = "\rShort rest finished! Time for a work"
             self.send_notification(message)
             self.short_rest_finish = False
         if self.active_for_minute:
