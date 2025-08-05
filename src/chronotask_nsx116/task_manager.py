@@ -227,7 +227,7 @@ class TaskManager:
             save_data(self.data_file, self.data)
 
         else:
-            print("Without status")
+            # print("Without status")
             for item in reversed_tasks:
                 if item["status"] == "active":
                     self.sorted_ids[current_id] = item["global_id"]
