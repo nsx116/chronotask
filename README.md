@@ -72,7 +72,7 @@ Inspired by TaskWarrior
 
     ```bash
     sudo apt update && sudo apt upgrade 
-    sudo apt install --upgrade python3
+    sudo apt install --upgrade python3 python3-dev
     sudo apt install --upgrade pipx
 
 ## Installation
