@@ -1,7 +1,11 @@
 from datetime import datetime
-from pynput import mouse, keyboard
 import time
 import threading
+import sys
+import tty
+import termios
+import select
+import os
 from chronotask_nsx116.interval_timer import IntervalTimer
 from chronotask_nsx116.settings import Settings, Files
 from chronotask_nsx116.writing_to_task import write_past_minutes_when_quit
@@ -22,99 +26,135 @@ class FocusTrack:
         self.activity_duration = self.interval_timer.activity_duration
         self.work_started_at = None
         self.sorted_ids = task_manager.sorted_ids
+        self.use_x11 = self._check_x11()
 
+    def _check_x11(self):
+        """Check if X11 display is available. Returns True for local GUI, False for SSH."""
+        try:
+            return 'DISPLAY' in os.environ and os.environ['DISPLAY']
+        except Exception:
+            return False
 
     def reset_activity_timer(self):
         """Resets the last activity time when there is user activity."""
         self.last_activity_time = time.time()
 
     def check_inactivity(self):
-        """Checks for inactivity and pauses the timer if no activity is detected for inactivity_limit seconds."""
+        """Checks for inactivity and pauses the timer if no activity is detected."""
         while not self.stop_timer:
             if self.working:
-                if time.time() - self.last_activity_time > self.settings.inactivity_limit:  # Inactivity period
+                if time.time() - self.last_activity_time > self.settings.inactivity_limit:
                     if not self.activity_timer_pause:
-                        print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
+                        print("\r" + " " * 75, end='', flush=True)
                         print(f"\rNo activity for {self.settings.inactivity_limit} seconds, pausing timer {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", end='', flush=True)
-                        self.activity_timer_pause = True  # Pause the activity timer
-            time.sleep(1)  # Check every second
+                        self.activity_timer_pause = True
+            time.sleep(1)
 
     def update_activity_timer(self, global_id):
         """Continuously updates the activity timer and logs every minute."""
         while not self.stop_timer:
             self.interval_timer.run(global_id)
 
-    def on_mouse_move(self, x, y):
-        """Handler for mouse movement activity."""
-        self.reset_activity_timer()
-        if self.activity_timer_pause and self.working:  # If timer is paused, resume it
-            print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
-            print(f"\rResuming timer due to mouse activity.{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", end='', flush=True)
-            self.activity_timer_pause = False
+    def _x11_activity_loop(self, global_id):
+        """Run pynput listeners for X11/graphical environments."""
+        from pynput import mouse, keyboard
+        
+        def on_mouse_move(x, y):
+            self.reset_activity_timer()
+            if self.activity_timer_pause and self.working:
+                print("\r" + " " * 75, end='', flush=True)
+                print(f"\rResuming timer due to mouse activity.{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", end='', flush=True)
+                self.activity_timer_pause = False
 
-    def on_keyboard_event(self, key):
-        """Handler for keyboard activity."""
-        self.reset_activity_timer()
-        if self.activity_timer_pause and self.working:  # If timer is paused, resume it
-            print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
-            print(f"\rResuming timer due to keyboard activity {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", end='', flush=True)
-            self.activity_timer_pause = False
+        def on_keyboard_event(key):
+            self.reset_activity_timer()
+            if self.activity_timer_pause and self.working:
+                print("\r" + " " * 75, end='', flush=True)
+                print(f"\rResuming timer due to keyboard activity {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", end='', flush=True)
+                self.activity_timer_pause = False
+
+        mouse_listener = mouse.Listener(on_move=on_mouse_move)
+        keyboard_listener = keyboard.Listener(on_press=on_keyboard_event)
+
+        mouse_listener.start()
+        keyboard_listener.start()
+
+        while not self.stop_timer:
+            time.sleep(0.1)
+
+        mouse_listener.stop()
+        keyboard_listener.stop()
+
+    def _tty_activity_loop(self, global_id):
+        """Monitor TTY input for SSH/terminal environments (only for 'q' quit)."""
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setcbreak(fd)
+            while not self.stop_timer:
+                if select.select([sys.stdin], [], [], 0.1)[0]:
+                    ch = sys.stdin.read(1)
+                    if ch == 'q':
+                        self.stop_timer = True
+                        write_past_minutes_when_quit(
+                            global_id,
+                            self.interval_timer.activity_duration,
+                        )
+                        print("Timer stopped.")
+                        break
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
     def start(self, current_id):
-        """Starts the timer, inactivity checker, and sets up activity listeners."""
+        """Starts the timer with appropriate input detection mode."""
 
         self.work_started_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         global_id = get_global_id_by_current_id(current_id, self.sorted_ids)
         write_at_start(global_id, self.work_started_at)
 
-        self.activity_timer_pause = False  # Start the timer immediately
+        self.activity_timer_pause = False
 
-        # Set up mouse and keyboard listeners
-        mouse_listener = mouse.Listener(on_move=self.on_mouse_move)
-        keyboard_listener = keyboard.Listener(on_press=self.on_keyboard_event)
+        if self.use_x11:
+            activity_thread = threading.Thread(target=self._x11_activity_loop, args=(global_id,))
+            print("Using X11 input monitoring (mouse/keyboard)")
+            inactivity_thread = threading.Thread(target=self.check_inactivity, daemon=True)
+            inactivity_thread.start()
+        else:
+            activity_thread = threading.Thread(target=self._tty_activity_loop, args=(global_id,))
+            print("SSH mode: Timer runs continuously without activity detection")
+            print("Press 'q' to stop the timer")
 
-        mouse_listener.start()
-        keyboard_listener.start()
+        activity_thread.start()
 
-        # Start the inactivity checker thread
-        inactivity_thread = threading.Thread(target=self.check_inactivity, daemon=True) # daemon=True added
-        inactivity_thread.start()
-
-        # Start the activity timer thread (no recursion, just a loop)
         activity_timer_thread = threading.Thread(target=self.update_activity_timer, args=(global_id,))
         activity_timer_thread.start()
 
-        # Start the thread that waits for user input to quit
         quit_thread = threading.Thread(target=self.wait_for_quit_input, args=(global_id,))
         quit_thread.start()
 
-        # Join threads to allow for clean shutdown
-        # inactivity_thread.join()
+        activity_thread.join()
         activity_timer_thread.join()
         quit_thread.join()
 
-        # Stop the listeners when the program exits
-        mouse_listener.stop()
-        keyboard_listener.stop()
-
     def wait_for_quit_input(self, global_id):
-        """Waits for user input 'q' and stops the timer. Without the first line
-        hangs the program because input() is blocking function and block the 
-        program if previous unproper inuput had been put. With while input works
-        only once during the loop and release execution further after the loop"""
-        while not self.stop_timer:
-            try:
-                user_input = input().strip().lower()
-                if user_input == 'q':
+        """Waits for user input 'q' and stops the timer."""
+        if not self.use_x11:
+            while not self.stop_timer:
+                time.sleep(0.1)
+        else:
+            while not self.stop_timer:
+                try:
+                    user_input = input().strip().lower()
+                    if user_input == 'q':
+                        self.stop_timer = True
+                        write_past_minutes_when_quit(
+                            global_id,
+                            self.interval_timer.activity_duration,
+                        )
+                        print("Timer stopped.")
+                    else:
+                        print("Invalid input. Type 'q' to stop the timer.")
+                except KeyboardInterrupt:
+                    print("\nExiting due to keyboard interrupt.")
                     self.stop_timer = True
-                    write_past_minutes_when_quit(
-                        global_id,
-                        self.interval_timer.activity_duration,
-                    )
-                    print("Timer stopped.")
-                else:
-                    print("Invalid input. Type 'q' to stop the timer.")
-            except KeyboardInterrupt:
-                print("\nExiting due to keyboard interrupt.")
-                self.stop_timer = True
-                break
+                    break

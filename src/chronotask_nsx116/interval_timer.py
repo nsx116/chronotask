@@ -109,14 +109,16 @@ class IntervalTimer:
 
 
     def send_notification(self, message):
-        print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
+        print("\r" + " " * 75, end='', flush=True)
         print(message, end='', flush=True)
-        subprocess.run(['notify-send', "Pomodoro timer", message])
-        try:
-            pygame.mixer.music.load(self.notification_sound)
-            pygame.mixer.music.play()
-        except pygame.error as e:
-            print(f"Failed to play sound: {e}")
+        print(f"\a", end='', flush=True)
+        if 'DISPLAY' in os.environ and os.environ['DISPLAY']:
+            subprocess.run(['notify-send', "Pomodoro timer", message])
+            try:
+                pygame.mixer.music.load(self.notification_sound)
+                pygame.mixer.music.play()
+            except pygame.error as e:
+                print(f"Failed to play sound: {e}")
 
     def change_to_rest(self):
         """Resets the timer for the next Pomodoro session."""
