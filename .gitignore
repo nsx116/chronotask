@@ -1,0 +1,13 @@
+__pycache__/
+terminator_env/
+trash/
+.idea/
+test/
+.venv/
+*.egg-info/
+dist/
+
+pomodoro_summary.txt
+chronotask.md
+prog.py
+

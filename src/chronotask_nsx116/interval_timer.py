@@ -111,7 +111,7 @@ class IntervalTimer:
     def send_notification(self, message):
         print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
         print(message, end='', flush=True)
-        subprocess.run(['notify-send', "Pomodoro timer", message])
+        subprocess.Popen(['notify-send', "Pomodoro timer", message], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
         try:
             pygame.mixer.music.load(self.notification_sound)
             pygame.mixer.music.play()

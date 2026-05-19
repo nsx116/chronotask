@@ -13,6 +13,7 @@ dependencies =[
         "pygame",
         "appdirs",
         "terminaltables",
+        "plotext",
     ]
 description = "A task manager with task's time tracker."
 readme = "README.md"
