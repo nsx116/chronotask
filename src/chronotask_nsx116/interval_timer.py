@@ -113,7 +113,10 @@ class IntervalTimer:
         print(message, end='', flush=True)
         print(f"\a", end='', flush=True)
         if 'DISPLAY' in os.environ and os.environ['DISPLAY']:
-            subprocess.Popen(['notify-send', "Pomodoro timer", message], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+            try:
+                subprocess.Popen(['notify-send', "Pomodoro timer", message], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+            except FileNotFoundError:
+                print(f"Failed to send notification notify-send")
         try:
             pygame.mixer.music.load(self.notification_sound)
             pygame.mixer.music.play()
