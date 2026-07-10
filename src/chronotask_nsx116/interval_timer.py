@@ -109,9 +109,11 @@ class IntervalTimer:
 
 
     def send_notification(self, message):
-        print("\r" + " " * 75, end='', flush=True)  # Overwrite with spaces
+        print("\r" + " " * 75, end='', flush=True)
         print(message, end='', flush=True)
-        subprocess.Popen(['notify-send', "Pomodoro timer", message], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+        print(f"\a", end='', flush=True)
+        if 'DISPLAY' in os.environ and os.environ['DISPLAY']:
+            subprocess.Popen(['notify-send', "Pomodoro timer", message], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
         try:
             pygame.mixer.music.load(self.notification_sound)
             pygame.mixer.music.play()
@@ -130,9 +132,8 @@ class IntervalTimer:
         self.timer.working = True
         self.short_rest = False
         self.long_rest = False
-        # Set to False if want launch activity timer immediately after rest time
-        # finish, without keyboard or mouse activity checking
-        self.timer.activity_timer_pause = True
+        # In SSH mode (no X11), start timer automatically without waiting for activity
+        self.timer.activity_timer_pause = self.timer.use_x11
         self.activity_duration = 0
         self.rest_duration = 0
         self.timer.last_activity_time = time.time()
