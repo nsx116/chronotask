@@ -2,6 +2,7 @@ import plotext as plt
 from datetime import datetime
 import calendar
 
+fig = plt.figure
 
 def make_minutes_by_date_plot(year, month, data):
     # Prepare all dates in the specified month
@@ -58,20 +59,26 @@ def make_minutes_by_date_plot(year, month, data):
     # Prepare data for plotting
     y_values = [round(minutes / 60, 1) for minutes in minutes_by_date.values()]  # Total minutes (y-axis)
 
-    # plt.interactive(True)
+    # fig.interactive(True)
 
     # Plotting with plotext
-    plt.title(f"Work Hours by Date: {calendar.month_name[month]} {year}")
-    plt.bar(x_labels, y_values, width = 2 / 5, color=44)
-    plt.theme("pro")
-    plt.plotsize(100, 11)
-    plt.ylim(0)
+    fig.title(f"Work Hours by Date: {calendar.month_name[month]} {year}")
+    # print(f"x_labels: {x_labels}")
+    # print(f"y_values: {y_values}")
+    signal = fig.bar(x_labels, y_values, width = 2 / 5)
+    fig.theme("dark")
+    fig.draw(signal)
+    fig.plot_size(100, 11)
+    fig.ruler('y').lim(lower=0)
     largest = int(max(y_values))
-    for y in range(1, largest + 1):
-        plt.hline(y, color=13)
+    grid_pixel = plt.pixel(foreground = "cyan") 
+    # for y in range(1, largest + 1):
+        # fig.line(y, orientation='horizontal', pixel=13)
+        # fig.ruler('y').grid(style = "dotted", pixel = grid_pixel) 
     # Draw vertical lines where x_label contains "mo"
-    for idx, label in enumerate(x_labels):
-        if "mo" in label:
-            plt.vline(idx, color=13)  # Use the index as the x-position
-    plt.show()
+    # for idx, label in enumerate(x_labels):
+        # if "mo" in label:
+            # fig.line(idx, orientation='vertical', pixel=15)  # Use the index as the x-position
+            # fig.ruler('x').grid(style = "dotted", pixel=grid_pixel) 
+    fig.show()
     print(f"Sum: {round(total / 60, 1)} hours Count: {count} days Average: {average} hours/day")
